@@ -237,32 +237,32 @@ async function generateNewIdea(topic = 'innovative startup ideas') {
                 .join('\n\n');
 
             // Build the system prompt
-            const systemPrompt = `You are an expert venture analyst and idea synthesizer. Your task is to generate a single, novel business idea based on the provided Hacker News context about the topic: "${topic}".
+            const systemPrompt = `You are an expert venture analyst and idea synthesizer. Your task: search the public internet for real people's problems related to the topic "${topic}" (forums, news, social discussions, Q&A, product reviews, Hacker News, Reddit threads, etc.), synthesize findings, and generate a single, novel business idea based on that evidence.
+
+Use Google Search grounding and the provided Hacker News context to find concrete pain points people report. Prioritize recent, public, and relevant posts or articles. Cite at least 3 distinct public sources (title, url, short summary of the evidence).
 
 Follow these rules strictly:
-1. Your response MUST be in valid TOON format with 2-space indentation
-2. Use comma-separated values in a single row, NOT line-by-line key:value pairs
-3. Include these 8 fields in order: id|name|jargon|problem|market|how|impact|valuation|sources
-4. Sources must be a JSON array string: [{"title":"...","url":"..."}]
+1. Your response MUST be in valid TOON format with 2-space indentation.
+2. Use a single indented, pipe-delimited data row (NOT line-by-line key:value pairs).
+3. Include these 9 fields in order: id|name|jargon|problem|market|how|impact|valuation|sources
+4. The sources field must be a JSON array string like: [{"title":"...","url":"...","summary":"..."}]
 5. Use this exact header: ideas[1|]{id|name|jargon|problem|market|how|impact|valuation|sources}:
 
 CRITICAL FORMAT (2-space indent, pipe-delimited row):
 
 ideas[1|]{id|name|jargon|problem|market|how|impact|valuation|sources}:
-  ${crypto.randomUUID()}|StartupName|One-line tagline|Problem description here|Target market description|How it works description|Impact and benefits|\$50M-\$100M|[{"title":"Source Title","url":"https://example.com"}]
+  ${crypto.randomUUID()}|StartupName|One-line jargon/tagline|Concise problem statement summarizing people's reported pain|Target market description|How the product/service works (one short sentence)|Impact and benefits (one sentence)|$50M-$100M|[{"title":"Source Title","url":"https://example.com","summary":"One-line summary of evidence"}]
 
 IMPORTANT:
-- Single data row with PIPE (|) delimiter between fields
-- 2-space indentation before the data row
-- Use pipe character (|) as delimiter, NOT commas
-- Keep each field concise but informative (single sentence or short phrase)
-- Include at least 3 sources from the Hacker News context
-- Format: uuid|name|jargon|problem|market|how|impact|valuation|json-array
-
-Begin your response with the TOON header followed by ONE indented pipe-delimited data row.`;
+- Single data row only, pipe (|) as delimiter, 2-space indentation before the row.
+- Keep each field concise (one sentence or short phrase).
+- Include at least 3 sources discovered on the public web; if insufficient web evidence exists, explicitly note that and rely on the supplied Hacker News context.
+- Do NOT invent source URLs — only include real public URLs or fallback to Hacker News context entries.
+- Begin your response with the exact TOON header followed by ONE indented pipe-delimited data row.`;
 
             // User message with the actual context
-            const userMessage = `Here are the Hacker News sources about "${topic}":\n\n${hackerNewsContext}\n\nGenerate ONE business idea in TOON format. Remember: header line, then ONE indented comma-separated data row.`;
+            // const userMessage = `Here are the Hacker News sources about "${topic}":\n\n${hackerNewsContext}\n\nGenerate ONE business idea in TOON format. Remember: header line, then ONE indented comma-separated data row.`;
+            const userMessage = `Here are the Hacker News sources about "${topic}":\n\n${hackerNewsContext}\n\nUsing the Hacker News context above plus web search grounding, synthesize evidence of real people's pain points and generate ONE novel, actionable business idea. Follow these requirements:\n- Respond ONLY in TOON format with the exact header line and a SINGLE 2-space-indented pipe-delimited data row as specified in the system prompt.\n- Include at least 3 distinct public sources in the sources field (a JSON array string). Do NOT invent URLs; if web evidence is insufficient, explicitly state that and rely on the Hacker News context.\n- Keep each field concise (one sentence or short phrase).\nProvide the single TOON-formatted idea now.`;
 
             console.log('System Prompt:', systemPrompt);
             console.log('User Message:', userMessage);

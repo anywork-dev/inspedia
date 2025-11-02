@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspedia - Discovery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="layout.css">
+    <style>
+        .idea-card {
+            background-color: #404040;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 300px;
+        }
+
+        .idea-header {
+            margin-bottom: 1rem;
+        }
+
+        .idea-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #FDFF98;
+        }
+
+        .idea-summary {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #e5e5e5;
+            margin-bottom: 1rem;
+        }
+
+        .idea-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .idea-source {
+            font-size: 0.75rem;
+            color: #a5a5a5;
+            margin-top: 1rem;
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 100px;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(to top, #303030, transparent);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 26rem;
+            margin: 0 auto;
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            gap: 1rem;
+        }
+
+        .loading-text {
+            color: #a5a5a5;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <svg class="header-back" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="window.location.href='welcome.html'">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="#E5E5E5"/>
+            </svg>
+            <div class="logo">INSPEDIA</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- <div id="sessionInfo" style="display: none; margin-bottom: 1rem; padding: 0.75rem; background: #272727; border-radius: 0.5rem; font-size: 0.875rem; color: #a5a5a5;">
+                <div style="color: #FDFF98; font-weight: 600; margin-bottom: 0.5rem;">Active Session:</div>
+                <div id="sessionCategories"></div>
+                <div id="sessionQuery"></div>
+            </div> -->
+            <div id="ideaContainer">
+                <div class="loading-state">
+                    <div class="loading"></div>
+                    <div class="loading-text">Discovering your next idea...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons" id="actionButtons" style="display: none;">
+            <div class="btn-group">
+                <button class="btn btn-primary flex-1" id="nextBtn">
+                    ✨ Next Idea
+                </button>
+                <button class="btn btn-secondary flex-1" id="pinBtn" disabled>
+                    📌 Pin
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-icon active" data-nav="discovery">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.24 27.756C7.64444 27.8333 7.112 27.6911 6.64267 27.3293C6.17333 26.9676 5.90267 26.4884 5.83067 25.892L4.192 12.9413C4.12089 12.344 4.26889 11.8036 4.636 11.32C5.00311 10.8364 5.48489 10.5671 6.08133 10.512L7.384 10.4147V19.7947C7.384 21.1244 7.85511 22.2604 8.79733 23.2027C9.73955 24.1449 10.8756 24.616 12.2053 24.616H24.452C24.4547 24.9271 24.3458 25.2 24.1253 25.4347C23.9049 25.6693 23.6338 25.8116 23.312 25.8613L8.24 27.756ZM12.2053 21.9493C11.592 21.9493 11.0796 21.7436 10.668 21.332C10.2564 20.9204 10.0511 20.408 10.052 19.7947V6.15467C10.052 5.54044 10.2573 5.028 10.668 4.61733C11.0787 4.20667 11.5911 4.00089 12.2053 4H25.8453C26.4596 4 26.972 4.20578 27.3827 4.61733C27.7933 5.02889 27.9991 5.54133 28 6.15467V19.7947C28 20.408 27.7942 20.9204 27.3827 21.332C26.9711 21.7436 26.4587 21.9493 25.8453 21.9493H12.2053ZM16.992 15.9333L19.0253 14.7053L21.0587 15.9333C21.1751 15.9884 21.2818 15.984 21.3787 15.92C21.4747 15.8578 21.5004 15.7658 21.456 15.644L20.9 13.328L22.6853 11.7853C22.7787 11.708 22.8089 11.6169 22.776 11.512C22.7431 11.4071 22.6658 11.3436 22.544 11.3213L20.1947 11.1133L19.2747 8.93867C19.2302 8.82222 19.1471 8.764 19.0253 8.764C18.9036 8.764 18.8209 8.82178 18.7773 8.93733L17.8573 11.1133L15.508 11.32C15.3862 11.3431 15.3089 11.4071 15.276 11.512C15.2431 11.6169 15.2733 11.708 15.3667 11.7853L17.152 13.328L16.5947 15.644C16.5502 15.7649 16.5764 15.8573 16.6733 15.9213C16.7702 15.9836 16.8756 15.9876 16.992 15.9333Z" fill="#E5E5E5"/>
+                </svg>
+            </div>
+            <div class="nav-icon" data-nav="collection">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 24L10.4 26.4C9.51112 26.7778 8.66667 26.7058 7.86667 26.184C7.06667 25.6622 6.66667 24.9231 6.66667 23.9667V6.66667C6.66667 5.93333 6.928 5.30578 7.45067 4.784C7.97334 4.26222 8.60089 4.00089 9.33334 4H22.6667C23.4 4 24.028 4.26133 24.5507 4.784C25.0733 5.30667 25.3342 5.93422 25.3333 6.66667V23.9667C25.3333 24.9222 24.9333 25.6613 24.1333 26.184C23.3333 26.7067 22.4889 26.7787 21.6 26.4L16 24ZM16 21.0667L22.6667 23.9333V6.66667H9.33334V23.9333L16 21.0667ZM16 6.66667H9.33334H22.6667H16Z" fill="#E5E5E5"/>
+                </svg>
+            </div>
+            <div class="nav-icon" data-nav="workbench">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.99999 24L4.93333 27.0667C4.5111 27.4889 4.02755 27.5836 3.48266 27.3507C2.93777 27.1178 2.66577 26.7009 2.66666 26.1V5.33335C2.66666 4.60002 2.92799 3.97246 3.45066 3.45069C3.97333 2.92891 4.60088 2.66758 5.33333 2.66669H26.6667C27.4 2.66669 28.028 2.92802 28.5507 3.45069C29.0733 3.97335 29.3342 4.60091 29.3333 5.33335V21.3334C29.3333 22.0667 29.0724 22.6947 28.5507 23.2174C28.0289 23.74 27.4009 24.0009 26.6667 24H7.99999ZM6.86666 21.3334H26.6667V5.33335H5.33333V22.8334L6.86666 21.3334Z" fill="#E5E5E5"/>
+                </svg>
+            </div>
+            <div class="nav-icon" data-nav="profile">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.79999 22.8C8.93332 21.9334 10.2 21.2502 11.6 20.7507C13 20.2511 14.4667 20.0009 16 20C17.5333 19.9991 19 20.2494 20.4 20.7507C21.8 21.252 23.0667 21.9351 24.2 22.8C24.9778 21.8889 25.5835 20.8556 26.0173 19.7C26.4511 18.5445 26.6675 17.3111 26.6667 16C26.6667 13.0445 25.628 10.5276 23.5507 8.44935C21.4733 6.37113 18.9564 5.33246 16 5.33335C13.0435 5.33424 10.5267 6.37335 8.44933 8.45069C6.37199 10.528 5.33332 13.0445 5.33332 16C5.33332 17.3111 5.55021 18.5445 5.98399 19.7C6.41777 20.8556 7.0231 21.8889 7.79999 22.8ZM16 17.3334C14.6889 17.3334 13.5831 16.8836 12.6827 15.984C11.7822 15.0845 11.3324 13.9787 11.3333 12.6667C11.3342 11.3547 11.7844 10.2489 12.684 9.34935C13.5835 8.4498 14.6889 8.00002 16 8.00002C17.3111 8.00002 18.4169 8.45024 19.3173 9.35069C20.2178 10.2511 20.6675 11.3565 20.6667 12.6667C20.6658 13.9769 20.216 15.0827 19.3173 15.984C18.4187 16.8854 17.3129 17.3351 16 17.3334ZM16 29.3334C14.1555 29.3334 12.4222 28.9831 10.8 28.2827C9.17777 27.5822 7.76666 26.6325 6.56666 25.4334C5.36666 24.2342 4.41688 22.8231 3.71732 21.2C3.01777 19.5769 2.66755 17.8436 2.66666 16C2.66577 14.1565 3.01599 12.4231 3.71732 10.8C4.41866 9.17691 5.36844 7.7658 6.56666 6.56669C7.76488 5.36758 9.17599 4.4178 10.8 3.71735C12.424 3.01691 14.1573 2.66669 16 2.66669C17.8427 2.66669 19.576 3.01691 21.2 3.71735C22.824 4.4178 24.2351 5.36758 25.4333 6.56669C26.6315 7.7658 27.5818 9.17691 28.284 10.8C28.9862 12.4231 29.336 14.1565 29.3333 16C29.3307 17.8436 28.9804 19.5769 28.2827 21.2C27.5849 22.8231 26.6351 24.2342 25.4333 25.4334C24.2316 26.6325 22.8204 27.5827 21.2 28.284C19.5795 28.9854 17.8462 29.3351 16 29.3334ZM16 26.6667C17.1778 26.6667 18.2889 26.4947 19.3333 26.1507C20.3778 25.8067 21.3333 25.312 22.2 24.6667C21.3333 24.0222 20.3778 23.528 19.3333 23.184C18.2889 22.84 17.1778 22.6676 16 22.6667C14.8222 22.6658 13.7111 22.8382 12.6667 23.184C11.6222 23.5298 10.6667 24.024 9.79999 24.6667C10.6667 25.3111 11.6222 25.8058 12.6667 26.1507C13.7111 26.4956 14.8222 26.6676 16 26.6667ZM16 14.6667C16.5778 14.6667 17.0555 14.4778 17.4333 14.1C17.8111 13.7222 18 13.2445 18 12.6667C18 12.0889 17.8111 11.6111 17.4333 11.2334C17.0555 10.8556 16.5778 10.6667 16 10.6667C15.4222 10.6667 14.9444 10.8556 14.5667 11.2334C14.1889 11.6111 14 12.0889 14 12.6667C14 13.2445 14.1889 13.7222 14.5667 14.1C14.9444 14.4778 15.4222 14.6667 16 14.6667Z" fill="#E5E5E5"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { InspediaApp } from './app.js';
+
+        // Initialize the app
+        const app = new InspediaApp();
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoriesParam = urlParams.get('categories');
+        const queryParam = urlParams.get('query');
+
+        // Parse categories from URL
+        const categories = categoriesParam ? categoriesParam.split(',') : [];
+        const customQuery = queryParam || '';
+
+        // Get or create session data with URL parameters
+        let sessionData = JSON.parse(localStorage.getItem('current_session') || '{}');
+        
+        // Update session data with URL parameters if provided
+        if (categories.length > 0 || customQuery) {
+            sessionData = {
+                ...sessionData,
+                categories: categories.length > 0 ? categories : sessionData.categories || [],
+                customTopic: customQuery || sessionData.customTopic || '',
+                timestamp: sessionData.timestamp || new Date().toISOString()
+            };
+            localStorage.setItem('current_session', JSON.stringify(sessionData));
+        }
+
+        console.log('Session data:', sessionData);
+        console.log('Categories:', categories);
+        console.log('Custom query:', customQuery);
+
+        // DOM Elements
+        const ideaContainer = document.getElementById('ideaContainer');
+        const actionButtons = document.getElementById('actionButtons');
+        const nextBtn = document.getElementById('nextBtn');
+        const pinBtn = document.getElementById('pinBtn');
+        const navIcons = document.querySelectorAll('.nav-icon');
+
+        let currentIdea = null;
+
+        // Load first idea
+        loadNextIdea();
+
+        // Event Listeners
+        nextBtn.addEventListener('click', () => {
+            loadNextIdea();
+        });
+
+        pinBtn.addEventListener('click', () => {
+            pinCurrentIdea();
+        });
+
+        // Functions
+        async function loadNextIdea() {
+            try {
+                nextBtn.disabled = true;
+                pinBtn.disabled = true;
+                actionButtons.style.display = 'none';
+                
+                ideaContainer.innerHTML = `
+                    <div class="loading-state">
+                        <div class="loading"></div>
+                        <div class="loading-text">Discovering your next idea...</div>
+                    </div>
+                `;
+
+                // Check for API key
+                const apiKey = localStorage.getItem('gemini_api_key');
+                if (!apiKey) {
+                    ideaContainer.innerHTML = `
+                        <div class="idea-card">
+                            <div class="idea-title" style="color: #FFFFFF;">API Key Required</div>
+                            <div class="idea-summary">Please enter your Gemini API key to start discovering ideas.</div>
+                            <div style="margin-top: 1rem;">
+                                <input type="text" id="apiKeyInput" placeholder="Enter your Gemini API key" 
+                                    style="width: 100%; padding: 0.75rem; background: #303030; border: 1px solid #555; border-radius: 0.25rem; color: #e5e5e5; font-family: 'Poppins', sans-serif; margin-bottom: 0.75rem;">
+                                <button id="saveKeyBtn" class="btn btn-primary" style="width: 100%;">Save API Key</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('saveKeyBtn').addEventListener('click', () => {
+                        const key = document.getElementById('apiKeyInput').value.trim();
+                        if (key) {
+                            localStorage.setItem('gemini_api_key', key);
+                            app.state.saveApiKey(key);
+                            loadNextIdea();
+                        } else {
+                            alert('Please enter a valid API key');
+                        }
+                    });
+                    
+                    return;
+                }
+
+                // Set API key in app state
+                app.state.apiKey = apiKey;
+
+                // Build topic from session data
+                let topic = '';
+                if (categories.length > 0 && customQuery) {
+                    topic = `${categories.join(', ')} - ${customQuery}`;
+                } else if (categories.length > 0) {
+                    topic = categories.join(', ');
+                } else if (customQuery) {
+                    topic = customQuery;
+                } else {
+                    topic = 'innovative startup ideas';
+                }
+
+                // Use the app's generateNewIdea method
+                currentIdea = await app.generateNewIdea(topic);
+
+                displayIdea(currentIdea);
+                actionButtons.style.display = 'block';
+                nextBtn.disabled = false;
+                pinBtn.disabled = false;
+            } catch (error) {
+                console.error('Error loading idea:', error);
+                ideaContainer.innerHTML = `
+                    <div class="idea-card">
+                        <div class="idea-title" style="color: #ff6b6b;">Error Loading Idea</div>
+                        <div class="idea-summary">${error.message || 'Failed to load idea. Please try again.'}</div>
+                    </div>
+                `;
+                nextBtn.disabled = false;
+            }
+        }
+
+        function displayIdea(idea) {
+            // Format the idea data from the TOON structure
+            const name = idea.name || 'Innovative Idea';
+            const jargon = idea.jargon || 'Innovation';
+            const problem = idea.problem || 'No problem description';
+            const market = idea.market || 'No market info';
+            const how = idea.how || 'No implementation details';
+            const impact = idea.impact || 'No impact description';
+            const valuation = idea.valuation || 'N/A';
+            const sources = idea.sources || [];
+
+            ideaContainer.innerHTML = `
+                <div class="idea-card">
+                    <!-- Name & Jargon -->
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #FDFF98;">
+                        <div class="idea-title" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${name}</div>
+                        <div style="display: inline-block; padding: 0.25rem 0.75rem; background: #FDFF98; color: #303030; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600;">
+                            ${jargon}
+                        </div>
+                    </div>
+                    
+                    <!-- Problem -->
+                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #4a4a4a; border-radius: 0.5rem; border-left: 4px solid #ff6b6b;">
+                        <div style="font-weight: 600; color: #ff6b6b; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            🔴 Problem
+                        </div>
+                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${problem}</div>
+                    </div>
+                    
+                    <!-- Market -->
+                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #3a3a3a; border-radius: 0.5rem; border-left: 4px solid #4a90e2;">
+                        <div style="font-weight: 600; color: #4a90e2; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            📊 Market
+                        </div>
+                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${market}</div>
+                    </div>
+                    
+                    <!-- How It Works -->
+                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #4a4a4a; border-radius: 0.5rem; border-left: 4px solid #50c878;">
+                        <div style="font-weight: 600; color: #50c878; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            ⚙️ How It Works
+                        </div>
+                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${how}</div>
+                    </div>
+                    
+                    <!-- Impact -->
+                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #3a3a3a; border-radius: 0.5rem; border-left: 4px solid #9b59b6;">
+                        <div style="font-weight: 600; color: #9b59b6; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            💫 Impact
+                        </div>
+                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${impact}</div>
+                    </div>
+                    
+                    <!-- Valuation -->
+                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); border-radius: 0.5rem; border: 2px solid #FDFF98;">
+                        <div style="font-weight: 600; color: #FDFF98; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                            💰 Valuation
+                        </div>
+                        <div style="font-size: 1.125rem; font-weight: 700; color: #FDFF98;">${valuation}</div>
+                    </div>
+                    
+                    <!-- Sources -->
+                    ${sources.length > 0 ? `
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: #272727; border-radius: 0.5rem;">
+                            <div style="font-weight: 600; color: #a5a5a5; margin-bottom: 0.75rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                🔗 Sources
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                ${sources.map(s => `
+                                    <a href="${s.url}" target="_blank" style="color: #e5e5e5; text-decoration: none; font-size: 0.75rem; padding: 0.5rem; background: #333; border-radius: 0.25rem; transition: background 0.2s; display: block;">
+                                        <span style="opacity: 0.7;">→</span> ${s.title || s.url}
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function pinCurrentIdea() {
+            if (!currentIdea) return;
+
+            // Use the app's method to add pinned card
+            app.state.addPinnedCard(currentIdea);
+
+            // Show feedback
+            pinBtn.textContent = '✅ Pinned!';
+            pinBtn.disabled = true;
+
+            // Auto-load next idea
+            setTimeout(() => {
+                loadNextIdea();
+                pinBtn.textContent = '📌 Pin';
+            }, 1000);
+        }
+
+        // Bottom navigation
+        navIcons.forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const nav = e.currentTarget.dataset.nav;
+                
+                navIcons.forEach(i => i.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                
+                switch(nav) {
+                    case 'discovery':
+                        // Already here
+                        break;
+                    case 'collection':
+                        window.location.href = 'collection.html';
+                        break;
+                    case 'workbench':
+                        window.location.href = 'workbench.html';
+                        break;
+                    case 'profile':
+                        window.location.href = 'profile.html';
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

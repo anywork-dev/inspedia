@@ -941,10 +941,10 @@ function encodeListItemValue(value, writer, depth, options) {
 
 //#endregion
 //#region src/index.ts
-function encode(input, options) {
+function encode(input, options={delimiter: '|'}) {
 	return encodeValue(normalizeValue(input), resolveOptions(options));
 }
-function decode(input, options) {
+function decode(input, options={delimiter: '|'}) {
 	const resolvedOptions = resolveDecodeOptions(options);
 	const scanResult = toParsedLines(input, resolvedOptions.indent, resolvedOptions.strict);
 	if (scanResult.lines.length === 0) throw new TypeError("Cannot decode empty input: input must be a non-empty string");

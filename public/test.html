@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Decode tester</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial; margin: 18px; }
+    textarea { width: 100%; height: 220px; font-family: monospace; font-size: 13px; }
+    pre { background:#111; color:#dfdfdf; padding:12px; overflow:auto; max-height: 360px; }
+    label { display:block; margin:10px 0 6px; }
+    .controls { display:flex; gap:8px; align-items:center; margin:8px 0 18px; }
+  </style>
+</head>
+<body>
+  <h2>Test decode()</h2>
+
+  <label for="input">Input string to decode</label>
+  <textarea id="input" spellcheck="false">
+ideas[1]{id,name,jargon,problem,market,how,impact,valuation,sources}:
+  a9c8b7f6-e5d4-c3b2-a109-876543210fed|BioFabriQ|AI-driven bioprocess design and optimization for accelerated bio-manufacturing.|Optimizing complex biological manufacturing processes (e.g., cell cultures, fermentation) is highly empirical, expensive, and time-consuming, hindering the scalable production of biologics and bio-based products.|Biopharmaceutical R&D, synthetic biology companies, cultivated food startups, and industrial biotechnology firms seeking to accelerate product development and scale production.|A cloud-native AI platform leveraging Bayesian optimization and active learning to predict and design optimal experimental parameters (e.g., cell line genetics, media formulations, bioreactor conditions) for biological systems, integrating with lab automation for rapid validation.|Significantly reduces R&D cycles and operational costs in biomanufacturing, enabling faster market entry for novel bio-products and improving yields/efficiency for existing ones, driving innovation in diverse bio-economies.|S150M-S300M|[{"title":"Why Scaling Biomanufacturing Is So Hard","url":"https://example.com/hn-biomanufacturing-challenges"},{"title":"Active Learning for Experimental Design in Biology","url":"https://example.com/hn-active-learning-bio"},{"title":"The Rise of Cloud Labs and Automated Biotech","url":"https://example.com/hn-cloud-labs-biotech"}]
+  </textarea>
+
+  <div class="controls">
+    <label for="delimiter">Delimiter</label>
+    <input id="delimiter" value="|" style="width:60px" />
+    <button id="run">Decode</button>
+    <button id="run-console">Decode + console.log</button>
+  </div>
+
+  <label>Output</label>
+  <pre id="output">Click "Decode" to run.</pre>
+
+  <script type="module">
+    // Adjust import path if your module file has a different name/extension.
+    import { decode } from './toon-lib.js';
+
+    const inputEl = document.getElementById('input');
+    const delimEl = document.getElementById('delimiter');
+    const outEl = document.getElementById('output');
+    const run = document.getElementById('run');
+    const runConsole = document.getElementById('run-console');
+
+    function showResult(res) {
+      outEl.textContent = typeof res === 'string' ? res : JSON.stringify(res, null, 2);
+    }
+
+    async function doDecode(logToConsole = false) {
+      try {
+        const text = inputEl.value;
+        const delimiter = delimEl.value || undefined;
+        const result = await decode(text, { delimiter });
+        if (logToConsole) console.log('decode result:', result);
+        showResult(result);
+      } catch (err) {
+        showResult({ error: String(err), stack: err?.stack });
+      }
+    }
+
+    run.addEventListener('click', () => doDecode(false));
+    runConsole.addEventListener('click', () => doDecode(true));
+  </script>
+</body>
+</html>

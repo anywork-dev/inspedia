@@ -1,0 +1,22 @@
+{
+  "api": {
+    "baseUrl": "http://localhost:3000",
+    "endpoints": {
+      "login": "/api/login",
+      "register": "/api/register",
+      "logout": "/api/logout",
+      "me": "/api/me",
+      "generateIdea": "/api/generate-idea"
+    }
+  },
+  "app": {
+    "name": "Inspedia",
+    "version": "1.0.0",
+    "description": "Your personal space to discover, develop, and launch your next great idea"
+  },
+  "auth": {
+    "tokenKey": "authToken",
+    "userKey": "user",
+    "autoLogoutDays": 7
+  }
+}

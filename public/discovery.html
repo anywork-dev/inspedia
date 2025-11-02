@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="layout.css">
     <style>
         .idea-card {
-            background-color: #404040;
+            background-color: #252525;
             border-radius: 0.75rem;
-            padding: 1.5rem;
             margin-bottom: 1rem;
             min-height: 300px;
+            margin-bottom: 8rem;
         }
 
         .idea-header {
@@ -54,7 +54,11 @@
             left: 0;
             right: 0;
             padding: 1rem 1.5rem;
-            background: linear-gradient(to top, #303030, transparent);
+        }
+
+        .btn.flex-1 {
+            flex: 1;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
         }
 
         .btn-group {
@@ -76,6 +80,485 @@
         .loading-text {
             color: #a5a5a5;
             font-size: 0.875rem;
+        }
+
+        .save-button {
+            display: flex;
+            width: 100%;
+            justify-content: end;
+            margin-top: 1rem;
+            padding-bottom: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.5rem;
+            z-index: 1;
+        }
+
+        .save-btn-inactive {
+            background-color: #404040;
+            border: none;
+            border-radius: 0.5rem;
+            width: 2.75rem;
+            height: 2.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .save-btn-active {
+            border: none;
+            border-radius: 0.5rem;
+            width: 2.75rem;
+            height: 2.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .save-btn-active:hover {
+            transform: scale(1.05);
+        }
+
+        .save-btn-active svg g path {
+            filter: drop-shadow(0 0 6px #FDFF98) drop-shadow(0 0 14px rgba(253,255,152,0.45));
+            stroke: rgba(253,255,152,0.9);
+            stroke-width: 0.5px;
+        }
+
+        .save-btn-active svg {
+            overflow: visible;
+        }
+
+        .save-btn-active svg g path {
+            fill: #FDFF98;
+        }
+
+        /* Redesigned Card Styles */
+        .redesigned-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .redesigned-card:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .card-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(253, 255, 152, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.03) 0%, transparent 50%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Header Styles */
+        .card-header {
+            padding: 2rem 2rem 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .card-tag {
+            background: linear-gradient(135deg, #FDFF98, #f0f080);
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 12px rgba(253, 255, 152, 0.3);
+        }
+
+        .card-timestamp {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a0a0a0;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #FDFF98;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.3;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Content Styles */
+        .card-content {
+            padding: 0 2rem;
+        }
+
+        .content-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-icon {
+            position: relative;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .icon-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-icon span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.25rem;
+            z-index: 1;
+        }
+
+        .problem-icon .icon-bg {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+        }
+
+        .market-icon .icon-bg {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(74, 144, 226, 0.1));
+        }
+
+        .solution-icon .icon-bg {
+            background: linear-gradient(135deg, rgba(80, 200, 120, 0.2), rgba(80, 200, 120, 0.1));
+        }
+
+        .impact-icon .icon-bg {
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.1));
+        }
+
+        .section-info {
+            flex: 1;
+        }
+
+        .section-info h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 0.75rem 0;
+        }
+
+        .section-info p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #c0c0c0;
+            margin: 0;
+        }
+
+        /* Footer Styles */
+        .card-footer {
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .valuation-card {
+            background: linear-gradient(135deg, rgba(253, 255, 152, 0.15), rgba(253, 255, 152, 0.05));
+            border: 1px solid rgba(253, 255, 152, 0.3);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .valuation-icon {
+            position: relative;
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .valuation-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, rgba(253, 255, 152, 0.2), rgba(253, 255, 152, 0.1));
+            backdrop-filter: blur(10px);
+        }
+
+        .valuation-icon span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.25rem;
+            z-index: 1;
+        }
+
+        .valuation-info {
+            flex: 1;
+        }
+
+        .valuation-label {
+            font-size: 0.75rem;
+            color: #FDFF98;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .valuation-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FDFF98;
+        }
+
+        /* Sources */
+        .sources-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+        }
+
+        .sources-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sources-icon {
+            position: relative;
+            width: 2rem;
+            height: 2rem;
+            flex-shrink: 0;
+        }
+
+        .sources-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .sources-icon span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            z-index: 1;
+        }
+
+        .sources-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .sources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .source-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .source-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        .source-icon {
+            color: #FDFF98;
+            font-size: 0.875rem;
+            transition: transform 0.2s ease;
+        }
+
+        .source-link:hover .source-icon {
+            transform: translateX(2px);
+        }
+
+        .source-text {
+            flex: 1;
+        }
+
+        /* Action Hints */
+        .action-hints {
+            display: flex;
+            justify-content: center;
+            padding-top: 1rem;
+        }
+
+        .hint-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #888;
+            font-size: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .redesigned-card {
+                margin: 0 1rem;
+            }
+
+            .card-header {
+                padding: 1.5rem 1.5rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.5rem;
+            }
+
+            .card-content {
+                padding: 0 1.5rem;
+            }
+
+            .section-header {
+                gap: 0.75rem;
+            }
+
+
+            .section-info h3 {
+                font-size: 1rem;
+            }
+
+            .card-footer {
+                padding: 1.5rem;
+                margin: 0 -1rem -1rem;
+            }
+
+            .footer-content {
+                gap: 1rem;
+            }
+
+            .valuation-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .sources-list {
+                gap: 0.75rem;
+            }
+
+            .source-link {
+                justify-content: center;
+            }
+        }
+
+        /* Animation Enhancements */
+        .content-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .content-section:nth-child(1) { animation-delay: 0.1s; }
+        .content-section:nth-child(2) { animation-delay: 0.2s; }
+        .content-section:nth-child(3) { animation-delay: 0.3s; }
+        .content-section:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Micro-interactions */
+        .section-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .content-section:hover .section-icon {
+            transform: scale(1.1);
+        }
+
+        .section-icon span {
+            transition: transform 0.2s ease;
+        }
+
+        .content-section:hover .section-icon span {
+            transform: translate(-50%, -50%) scale(1.1);
         }
     </style>
 </head>
@@ -107,41 +590,53 @@
         <!-- Action Buttons -->
         <div class="action-buttons" id="actionButtons" style="display: none;">
             <div class="btn-group">
-                <button class="btn btn-primary flex-1" id="nextBtn">
-                    ✨ Next Idea
+                <button class="btn btn-secondary flex-1" id="prevBtn" disabled>
+                    ← Previous
                 </button>
-                <button class="btn btn-secondary flex-1" id="pinBtn" disabled>
-                    📌 Pin
+                <button class="btn btn-primary flex-1" id="nextBtn">
+                    Next Idea →
                 </button>
             </div>
         </div>
 
+        
+
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
             <div class="nav-icon active" data-nav="discovery">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8.24 27.756C7.64444 27.8333 7.112 27.6911 6.64267 27.3293C6.17333 26.9676 5.90267 26.4884 5.83067 25.892L4.192 12.9413C4.12089 12.344 4.26889 11.8036 4.636 11.32C5.00311 10.8364 5.48489 10.5671 6.08133 10.512L7.384 10.4147V19.7947C7.384 21.1244 7.85511 22.2604 8.79733 23.2027C9.73955 24.1449 10.8756 24.616 12.2053 24.616H24.452C24.4547 24.9271 24.3458 25.2 24.1253 25.4347C23.9049 25.6693 23.6338 25.8116 23.312 25.8613L8.24 27.756ZM12.2053 21.9493C11.592 21.9493 11.0796 21.7436 10.668 21.332C10.2564 20.9204 10.0511 20.408 10.052 19.7947V6.15467C10.052 5.54044 10.2573 5.028 10.668 4.61733C11.0787 4.20667 11.5911 4.00089 12.2053 4H25.8453C26.4596 4 26.972 4.20578 27.3827 4.61733C27.7933 5.02889 27.9991 5.54133 28 6.15467V19.7947C28 20.408 27.7942 20.9204 27.3827 21.332C26.9711 21.7436 26.4587 21.9493 25.8453 21.9493H12.2053ZM16.992 15.9333L19.0253 14.7053L21.0587 15.9333C21.1751 15.9884 21.2818 15.984 21.3787 15.92C21.4747 15.8578 21.5004 15.7658 21.456 15.644L20.9 13.328L22.6853 11.7853C22.7787 11.708 22.8089 11.6169 22.776 11.512C22.7431 11.4071 22.6658 11.3436 22.544 11.3213L20.1947 11.1133L19.2747 8.93867C19.2302 8.82222 19.1471 8.764 19.0253 8.764C18.9036 8.764 18.8209 8.82178 18.7773 8.93733L17.8573 11.1133L15.508 11.32C15.3862 11.3431 15.3089 11.4071 15.276 11.512C15.2431 11.6169 15.2733 11.708 15.3667 11.7853L17.152 13.328L16.5947 15.644C16.5502 15.7649 16.5764 15.8573 16.6733 15.9213C16.7702 15.9836 16.8756 15.9876 16.992 15.9333Z" fill="#E5E5E5"/>
+                <svg class="w-8 h-8 relative overflow-visible" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.23999 27.756C7.64444 27.8333 7.11199 27.6911 6.64266 27.3293C6.17332 26.9676 5.90266 26.4884 5.83066 25.892L4.19199 12.9413C4.12088 12.344 4.26888 11.8036 4.63599 11.32C5.0031 10.8364 5.48488 10.5671 6.08132 10.512L7.38399 10.4147V19.7947C7.38399 21.1244 7.8551 22.2604 8.79733 23.2027C9.73955 24.1449 10.8755 24.616 12.2053 24.616H24.452C24.4547 24.9271 24.3458 25.2 24.1253 25.4347C23.9049 25.6693 23.6338 25.8116 23.312 25.8613L8.23999 27.756ZM12.2053 21.9493C11.592 21.9493 11.0795 21.7436 10.668 21.332C10.2564 20.9204 10.0511 20.408 10.052 19.7947V6.15467C10.052 5.54044 10.2573 5.028 10.668 4.61733C11.0787 4.20667 11.5911 4.00089 12.2053 4H25.8453C26.4595 4 26.972 4.20578 27.3827 4.61733C27.7933 5.02889 27.9991 5.54133 28 6.15467V19.7947C28 20.408 27.7942 20.9204 27.3827 21.332C26.9711 21.7436 26.4587 21.9493 25.8453 21.9493H12.2053ZM16.992 15.9333L19.0253 14.7053L21.0587 15.9333C21.1751 15.9884 21.2818 15.984 21.3787 15.92C21.4747 15.8578 21.5004 15.7658 21.456 15.644L20.9 13.328L22.6853 11.7853C22.7787 11.708 22.8089 11.6169 22.776 11.512C22.7431 11.4071 22.6658 11.3436 22.544 11.3213L20.1947 11.1133L19.2747 8.93867C19.2302 8.82222 19.1471 8.764 19.0253 8.764C18.9035 8.764 18.8209 8.82178 18.7773 8.93733L17.8573 11.1133L15.508 11.32C15.3862 11.3431 15.3089 11.4071 15.276 11.512C15.2431 11.6169 15.2733 11.708 15.3667 11.7853L17.152 13.328L16.5947 15.644C16.5502 15.7649 16.5764 15.8573 16.6733 15.9213C16.7702 15.9836 16.8756 15.9876 16.992 15.9333Z" fill="#E5E5E5"/>
                 </svg>
             </div>
             <div class="nav-icon" data-nav="collection">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 24L10.4 26.4C9.51112 26.7778 8.66667 26.7058 7.86667 26.184C7.06667 25.6622 6.66667 24.9231 6.66667 23.9667V6.66667C6.66667 5.93333 6.928 5.30578 7.45067 4.784C7.97334 4.26222 8.60089 4.00089 9.33334 4H22.6667C23.4 4 24.028 4.26133 24.5507 4.784C25.0733 5.30667 25.3342 5.93422 25.3333 6.66667V23.9667C25.3333 24.9222 24.9333 25.6613 24.1333 26.184C23.3333 26.7067 22.4889 26.7787 21.6 26.4L16 24ZM16 21.0667L22.6667 23.9333V6.66667H9.33334V23.9333L16 21.0667ZM16 6.66667H9.33334H22.6667H16Z" fill="#E5E5E5"/>
+                <svg class="w-8 h-8 relative overflow-visible" style="opacity: 0.5" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.5">
+                        <path d="M16 24L10.4 26.4C9.51113 26.7778 8.66669 26.7058 7.86669 26.184C7.06669 25.6622 6.66669 24.9231 6.66669 23.9667V6.66667C6.66669 5.93333 6.92802 5.30578 7.45069 4.784C7.97335 4.26222 8.60091 4.00089 9.33335 4H22.6667C23.4 4 24.028 4.26133 24.5507 4.784C25.0734 5.30667 25.3342 5.93422 25.3334 6.66667V23.9667C25.3334 24.9222 24.9334 25.6613 24.1334 26.184C23.3334 26.7067 22.4889 26.7787 21.6 26.4L16 24ZM16 21.0667L22.6667 23.9333V6.66667H9.33335V23.9333L16 21.0667ZM16 6.66667H9.33335H22.6667H16Z" fill="#E5E5E5"/>
+                    </g>
                 </svg>
             </div>
             <div class="nav-icon" data-nav="workbench">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.99999 24L4.93333 27.0667C4.5111 27.4889 4.02755 27.5836 3.48266 27.3507C2.93777 27.1178 2.66577 26.7009 2.66666 26.1V5.33335C2.66666 4.60002 2.92799 3.97246 3.45066 3.45069C3.97333 2.92891 4.60088 2.66758 5.33333 2.66669H26.6667C27.4 2.66669 28.028 2.92802 28.5507 3.45069C29.0733 3.97335 29.3342 4.60091 29.3333 5.33335V21.3334C29.3333 22.0667 29.0724 22.6947 28.5507 23.2174C28.0289 23.74 27.4009 24.0009 26.6667 24H7.99999ZM6.86666 21.3334H26.6667V5.33335H5.33333V22.8334L6.86666 21.3334Z" fill="#E5E5E5"/>
+                <svg class="w-8 h-8 relative overflow-visible" style="opacity: 0.5" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.5">
+                        <path d="M8.00002 24L4.93336 27.0667C4.51113 27.4889 4.02758 27.5835 3.48269 27.3507C2.9378 27.1178 2.6658 26.7009 2.66669 26.1V5.33332C2.66669 4.59999 2.92802 3.97243 3.45069 3.45066C3.97336 2.92888 4.60091 2.66755 5.33336 2.66666H26.6667C27.4 2.66666 28.028 2.92799 28.5507 3.45066C29.0734 3.97332 29.3342 4.60088 29.3334 5.33332V21.3333C29.3334 22.0667 29.0725 22.6947 28.5507 23.2173C28.0289 23.74 27.4009 24.0009 26.6667 24H8.00002ZM6.86669 21.3333H26.6667V5.33332H5.33336V22.8333L6.86669 21.3333Z" fill="#E5E5E5"/>
+                    </g>
                 </svg>
             </div>
             <div class="nav-icon" data-nav="profile">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.79999 22.8C8.93332 21.9334 10.2 21.2502 11.6 20.7507C13 20.2511 14.4667 20.0009 16 20C17.5333 19.9991 19 20.2494 20.4 20.7507C21.8 21.252 23.0667 21.9351 24.2 22.8C24.9778 21.8889 25.5835 20.8556 26.0173 19.7C26.4511 18.5445 26.6675 17.3111 26.6667 16C26.6667 13.0445 25.628 10.5276 23.5507 8.44935C21.4733 6.37113 18.9564 5.33246 16 5.33335C13.0435 5.33424 10.5267 6.37335 8.44933 8.45069C6.37199 10.528 5.33332 13.0445 5.33332 16C5.33332 17.3111 5.55021 18.5445 5.98399 19.7C6.41777 20.8556 7.0231 21.8889 7.79999 22.8ZM16 17.3334C14.6889 17.3334 13.5831 16.8836 12.6827 15.984C11.7822 15.0845 11.3324 13.9787 11.3333 12.6667C11.3342 11.3547 11.7844 10.2489 12.684 9.34935C13.5835 8.4498 14.6889 8.00002 16 8.00002C17.3111 8.00002 18.4169 8.45024 19.3173 9.35069C20.2178 10.2511 20.6675 11.3565 20.6667 12.6667C20.6658 13.9769 20.216 15.0827 19.3173 15.984C18.4187 16.8854 17.3129 17.3351 16 17.3334ZM16 29.3334C14.1555 29.3334 12.4222 28.9831 10.8 28.2827C9.17777 27.5822 7.76666 26.6325 6.56666 25.4334C5.36666 24.2342 4.41688 22.8231 3.71732 21.2C3.01777 19.5769 2.66755 17.8436 2.66666 16C2.66577 14.1565 3.01599 12.4231 3.71732 10.8C4.41866 9.17691 5.36844 7.7658 6.56666 6.56669C7.76488 5.36758 9.17599 4.4178 10.8 3.71735C12.424 3.01691 14.1573 2.66669 16 2.66669C17.8427 2.66669 19.576 3.01691 21.2 3.71735C22.824 4.4178 24.2351 5.36758 25.4333 6.56669C26.6315 7.7658 27.5818 9.17691 28.284 10.8C28.9862 12.4231 29.336 14.1565 29.3333 16C29.3307 17.8436 28.9804 19.5769 28.2827 21.2C27.5849 22.8231 26.6351 24.2342 25.4333 25.4334C24.2316 26.6325 22.8204 27.5827 21.2 28.284C19.5795 28.9854 17.8462 29.3351 16 29.3334ZM16 26.6667C17.1778 26.6667 18.2889 26.4947 19.3333 26.1507C20.3778 25.8067 21.3333 25.312 22.2 24.6667C21.3333 24.0222 20.3778 23.528 19.3333 23.184C18.2889 22.84 17.1778 22.6676 16 22.6667C14.8222 22.6658 13.7111 22.8382 12.6667 23.184C11.6222 23.5298 10.6667 24.024 9.79999 24.6667C10.6667 25.3111 11.6222 25.8058 12.6667 26.1507C13.7111 26.4956 14.8222 26.6676 16 26.6667ZM16 14.6667C16.5778 14.6667 17.0555 14.4778 17.4333 14.1C17.8111 13.7222 18 13.2445 18 12.6667C18 12.0889 17.8111 11.6111 17.4333 11.2334C17.0555 10.8556 16.5778 10.6667 16 10.6667C15.4222 10.6667 14.9444 10.8556 14.5667 11.2334C14.1889 11.6111 14 12.0889 14 12.6667C14 13.2445 14.1889 13.7222 14.5667 14.1C14.9444 14.4778 15.4222 14.6667 16 14.6667Z" fill="#E5E5E5"/>
+                <svg class="w-8 h-8 relative overflow-visible" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.80002 22.8C8.93336 21.9333 10.2 21.2502 11.6 20.7507C13 20.2511 14.4667 20.0009 16 20C17.5334 19.9991 19 20.2493 20.4 20.7507C21.8 21.252 23.0667 21.9351 24.2 22.8C24.9778 21.8889 25.5836 20.8555 26.0174 19.7C26.4511 18.5444 26.6676 17.3111 26.6667 16C26.6667 13.0444 25.628 10.5275 23.5507 8.44932C21.4734 6.3711 18.9565 5.33243 16 5.33332C13.0436 5.33421 10.5267 6.37332 8.44936 8.45066C6.37202 10.528 5.33336 13.0444 5.33336 16C5.33336 17.3111 5.55024 18.5444 5.98402 19.7C6.4178 20.8555 7.02313 21.8889 7.80002 22.8ZM16 17.3333C14.6889 17.3333 13.5831 16.8835 12.6827 15.984C11.7822 15.0844 11.3325 13.9787 11.3334 12.6667C11.3342 11.3547 11.7845 10.2489 12.684 9.34932C13.5836 8.44977 14.6889 7.99999 16 7.99999C17.3111 7.99999 18.4169 8.45021 19.3174 9.35066C20.2178 10.2511 20.6676 11.3564 20.6667 12.6667C20.6658 13.9769 20.216 15.0827 19.3174 15.984C18.4187 16.8853 17.3129 17.3351 16 17.3333ZM16 29.3333C14.1556 29.3333 12.4222 28.9831 10.8 28.2827C9.1778 27.5822 7.76669 26.6324 6.56669 25.4333C5.36669 24.2342 4.41691 22.8231 3.71736 21.2C3.0178 19.5769 2.66758 17.8435 2.66669 16C2.6658 14.1564 3.01602 12.4231 3.71736 10.8C4.41869 9.17688 5.36847 7.76577 6.56669 6.56666C7.76491 5.36755 9.17602 4.41777 10.8 3.71732C12.424 3.01688 14.1574 2.66666 16 2.66666C17.8427 2.66666 19.576 3.01688 21.2 3.71732C22.824 4.41777 24.2351 5.36755 25.4334 6.56666C26.6316 7.76577 27.5818 9.17688 28.284 10.8C28.9862 12.4231 29.336 14.1564 29.3334 16C29.3307 17.8435 28.9805 19.5769 28.2827 21.2C27.5849 22.8231 26.6351 24.2342 25.4334 25.4333C24.2316 26.6324 22.8205 27.5827 21.2 28.284C19.5796 28.9853 17.8462 29.3351 16 29.3333Z" fill="#E5E5E5"/>
                 </svg>
             </div>
         </div>
     </div>
 
+    <script src="auth.js"></script>
     <script type="module">
+        // Check authentication
+        if (!auth.protectRoute()) {
+            // Will redirect to login
+        }
+
         import { InspediaApp } from './app.js';
 
         // Initialize the app
@@ -178,10 +673,12 @@
         const ideaContainer = document.getElementById('ideaContainer');
         const actionButtons = document.getElementById('actionButtons');
         const nextBtn = document.getElementById('nextBtn');
-        const pinBtn = document.getElementById('pinBtn');
+        const prevBtn = document.getElementById('prevBtn');
         const navIcons = document.querySelectorAll('.nav-icon');
 
         let currentIdea = null;
+        let ideaHistory = [];
+        let historyIndex = -1;
 
         // Load first idea
         loadNextIdea();
@@ -191,15 +688,15 @@
             loadNextIdea();
         });
 
-        pinBtn.addEventListener('click', () => {
-            pinCurrentIdea();
+        prevBtn.addEventListener('click', () => {
+            loadPreviousIdea();
         });
 
         // Functions
         async function loadNextIdea() {
             try {
                 nextBtn.disabled = true;
-                pinBtn.disabled = true;
+                prevBtn.disabled = true;
                 actionButtons.style.display = 'none';
                 
                 ideaContainer.innerHTML = `
@@ -208,38 +705,6 @@
                         <div class="loading-text">Discovering your next idea...</div>
                     </div>
                 `;
-
-                // Check for API key
-                const apiKey = localStorage.getItem('gemini_api_key');
-                if (!apiKey) {
-                    ideaContainer.innerHTML = `
-                        <div class="idea-card">
-                            <div class="idea-title" style="color: #FFFFFF;">API Key Required</div>
-                            <div class="idea-summary">Please enter your Gemini API key to start discovering ideas.</div>
-                            <div style="margin-top: 1rem;">
-                                <input type="text" id="apiKeyInput" placeholder="Enter your Gemini API key" 
-                                    style="width: 100%; padding: 0.75rem; background: #303030; border: 1px solid #555; border-radius: 0.25rem; color: #e5e5e5; font-family: 'Poppins', sans-serif; margin-bottom: 0.75rem;">
-                                <button id="saveKeyBtn" class="btn btn-primary" style="width: 100%;">Save API Key</button>
-                            </div>
-                        </div>
-                    `;
-                    
-                    document.getElementById('saveKeyBtn').addEventListener('click', () => {
-                        const key = document.getElementById('apiKeyInput').value.trim();
-                        if (key) {
-                            localStorage.setItem('gemini_api_key', key);
-                            app.state.saveApiKey(key);
-                            loadNextIdea();
-                        } else {
-                            alert('Please enter a valid API key');
-                        }
-                    });
-                    
-                    return;
-                }
-
-                // Set API key in app state
-                app.state.apiKey = apiKey;
 
                 // Build topic from session data
                 let topic = '';
@@ -256,21 +721,40 @@
                 // Use the app's generateNewIdea method
                 currentIdea = await app.generateNewIdea(topic);
 
+                // Add to history if this is a new idea
+                if (historyIndex < ideaHistory.length - 1) {
+                    // Remove any ideas after current position if we went back and then forward
+                    ideaHistory = ideaHistory.slice(0, historyIndex + 1);
+                }
+                ideaHistory.push(currentIdea);
+                historyIndex = ideaHistory.length - 1;
+
                 displayIdea(currentIdea);
+                updateNavigationButtons();
                 actionButtons.style.display = 'block';
-                nextBtn.disabled = false;
-                pinBtn.disabled = false;
             } catch (error) {
                 console.error('Error loading idea:', error);
                 ideaContainer.innerHTML = `
-                    <div class="idea-card">
+                    <div class="idea-card" style="padding: 2rem;">
                         <div class="idea-title" style="color: #ff6b6b;">Error Loading Idea</div>
                         <div class="idea-summary">${error.message || 'Failed to load idea. Please try again.'}</div>
                     </div>
                 `;
-                nextBtn.disabled = false;
+                updateNavigationButtons();
             }
         }
+
+
+
+        function getPinnedList() {
+                if (Array.isArray(app.state?.pinnedCards)) return app.state.pinnedCards;
+                try { return JSON.parse(localStorage.getItem('pinned_cards') || '[]'); } catch { return []; }
+            }
+            function setPinnedList(list) {
+                if (Array.isArray(app.state?.pinnedCards)) app.state.pinnedCards = list;
+                try { localStorage.setItem('pinned_cards', JSON.stringify(list)); } catch {}
+            }
+
 
         function displayIdea(idea) {
             // Format the idea data from the TOON structure
@@ -283,90 +767,234 @@
             const valuation = idea.valuation || 'N/A';
             const sources = idea.sources || [];
 
-            ideaContainer.innerHTML = `
-                <div class="idea-card">
-                    <!-- Name & Jargon -->
-                    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #FDFF98;">
-                        <div class="idea-title" style="font-size: 1.5rem; margin-bottom: 0.5rem;">${name}</div>
-                        <div style="display: inline-block; padding: 0.25rem 0.75rem; background: #FDFF98; color: #303030; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600;">
-                            ${jargon}
+            let cardHTML = `
+                <div class="idea-card redesigned-card">
+                    <!-- Redesigned Card with modern gradient glassmorphism -->
+                    <div class="card-bg-pattern"></div>
+
+                    <!-- Header Section -->
+                    <header class="card-header">
+                        <h1 class="card-title">${name}</h1>
+                        <div class="card-meta">
+                            <div class="card-tag">${jargon}</div>
                         </div>
-                    </div>
-                    
-                    <!-- Problem -->
-                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #4a4a4a; border-radius: 0.5rem; border-left: 4px solid #ff6b6b;">
-                        <div style="font-weight: 600; color: #ff6b6b; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            🔴 Problem
-                        </div>
-                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${problem}</div>
-                    </div>
-                    
-                    <!-- Market -->
-                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #3a3a3a; border-radius: 0.5rem; border-left: 4px solid #4a90e2;">
-                        <div style="font-weight: 600; color: #4a90e2; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            📊 Market
-                        </div>
-                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${market}</div>
-                    </div>
-                    
-                    <!-- How It Works -->
-                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #4a4a4a; border-radius: 0.5rem; border-left: 4px solid #50c878;">
-                        <div style="font-weight: 600; color: #50c878; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            ⚙️ How It Works
-                        </div>
-                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${how}</div>
-                    </div>
-                    
-                    <!-- Impact -->
-                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: #3a3a3a; border-radius: 0.5rem; border-left: 4px solid #9b59b6;">
-                        <div style="font-weight: 600; color: #9b59b6; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            💫 Impact
-                        </div>
-                        <div style="font-size: 0.875rem; line-height: 1.6; color: #e5e5e5;">${impact}</div>
-                    </div>
-                    
-                    <!-- Valuation -->
-                    <div style="margin-bottom: 1.25rem; padding: 1rem; background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); border-radius: 0.5rem; border: 2px solid #FDFF98;">
-                        <div style="font-weight: 600; color: #FDFF98; margin-bottom: 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                            💰 Valuation
-                        </div>
-                        <div style="font-size: 1.125rem; font-weight: 700; color: #FDFF98;">${valuation}</div>
-                    </div>
-                    
-                    <!-- Sources -->
-                    ${sources.length > 0 ? `
-                        <div style="margin-top: 1.5rem; padding: 1rem; background: #272727; border-radius: 0.5rem;">
-                            <div style="font-weight: 600; color: #a5a5a5; margin-bottom: 0.75rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
-                                🔗 Sources
+                    </header>
+
+                    <!-- Main Content -->
+                    <main class="card-content">
+                        <!-- Problem Statement -->
+                        <section class="content-section problem-section">
+                            <div class="section-header">
+                                <div class="section-icon problem-icon">
+                                    <div class="icon-bg"></div>
+                                    <span>🎯</span>
+                                </div>
+                                <div class="section-info">
+                                    <h3>The Challenge</h3>
+                                    <p>${problem}</p>
+                                </div>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                ${sources.map(s => `
-                                    <a href="${s.url}" target="_blank" style="color: #e5e5e5; text-decoration: none; font-size: 0.75rem; padding: 0.5rem; background: #333; border-radius: 0.25rem; transition: background 0.2s; display: block;">
-                                        <span style="opacity: 0.7;">→</span> ${s.title || s.url}
-                                    </a>
-                                `).join('')}
+                        </section>
+
+                        <!-- Market Opportunity -->
+                        <section class="content-section market-section">
+                            <div class="section-header">
+                                <div class="section-icon market-icon">
+                                    <div class="icon-bg"></div>
+                                    <span>📈</span>
+                                </div>
+                                <div class="section-info">
+                                    <h3>Market Opportunity</h3>
+                                    <p>${market}</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Solution -->
+                        <section class="content-section solution-section">
+                            <div class="section-header">
+                                <div class="section-icon solution-icon">
+                                    <div class="icon-bg"></div>
+                                    <span>⚡</span>
+                                </div>
+                                <div class="section-info">
+                                    <h3>How It Works</h3>
+                                    <p>${how}</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Impact -->
+                        <section class="content-section impact-section">
+                            <div class="section-header">
+                                <div class="section-icon impact-icon">
+                                    <div class="icon-bg"></div>
+                                    <span>✨</span>
+                                </div>
+                                <div class="section-info">
+                                    <h3>Expected Impact</h3>
+                                    <p>${impact}</p>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+
+                    <!-- Footer -->
+                    <footer class="card-footer">
+                        <div class="footer-content">
+                            <!-- Valuation -->
+                            <div class="valuation-card">
+                                <div class="valuation-icon">
+                                    <div class="valuation-bg"></div>
+                                    <span>💎</span>
+                                </div>
+                                <div class="valuation-info">
+                                    <div class="valuation-label">Estimated Valuation</div>
+                                    <div class="valuation-amount">${valuation}</div>
+                                </div>
+                            </div>
+
+                            <!-- Sources -->
+                            ${sources.length > 0 ? `
+                            <div class="sources-card">
+                                <div class="sources-header">
+                                    <div class="sources-icon">
+                                        <div class="sources-bg"></div>
+                                        <span>🔗</span>
+                                    </div>
+                                    <h4>Sources & References</h4>
+                                </div>
+                                <div class="sources-list">
+                                    ${sources.map(s => `
+                                        <a href="${s.url}" target="_blank" class="source-link">
+                                            <span class="source-icon">→</span>
+                                            <span class="source-text">${s.title || 'View Source'}</span>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Action Hints -->
+                        <div class="action-hints">
+                            <div class="hint-text">
+                                <span>💡</span>
+                                <span>Swipe to explore more ideas</span>
                             </div>
                         </div>
-                    ` : ''}
+                    </footer>
+                    <!-- Save Button -->
+                    <div id="saveButton" class="save-button">
+                        <div style="display:flex; align-items:center; gap:0.5rem; margin-right:0.75rem;">
+                            <span id="saveButtonHint" style="color:#a5a5a5; font-size:0.95rem;">Save</span>
+                        </div>
+                        <button id="saveBtn" class="save-btn-inactive">
+                            <svg class="shrink-0 w-6 h-6 relative overflow-visible" style="opacity: 0.75; aspect-ratio: 1" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <g opacity="0.75">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.75C8.524 3.75 5.75 6.467 5.75 9.766C5.75 11.771 6.57 13.499 8.035 14.576C8.358 14.813 8.635 15.167 8.74 15.616C8.827 15.985 8.926 16.434 9.024 16.91H11.25V15.827C11.2499 15.6843 11.2904 15.5445 11.367 15.424L12.169 14.164L10.37 12.752C10.2234 12.6371 10.1249 12.4718 10.0935 12.2883C10.062 12.1048 10.1 11.9161 10.2 11.759L11.367 9.927C11.4199 9.84387 11.4887 9.77198 11.5694 9.71544C11.6501 9.65889 11.7412 9.61879 11.8374 9.59744C11.9336 9.57608 12.033 9.57388 12.1301 9.59096C12.2271 9.60805 12.3199 9.64408 12.403 9.697C12.4861 9.74992 12.558 9.8187 12.6146 9.89941C12.6711 9.98011 12.7112 10.0712 12.7326 10.1674C12.7539 10.2636 12.7561 10.363 12.739 10.4601C12.722 10.5571 12.6859 10.6499 12.633 10.733L11.831 11.992L13.63 13.405C13.7763 13.5198 13.8747 13.6849 13.9061 13.8683C13.9375 14.0516 13.8997 14.24 13.8 14.397L12.75 16.046V16.91H14.976C15.074 16.434 15.173 15.985 15.26 15.616C15.366 15.167 15.642 14.813 15.965 14.576C17.429 13.499 18.25 11.77 18.25 9.766C18.25 6.467 15.476 3.75 12 3.75ZM14.689 18.41H9.31C9.42 19.047 9.507 19.65 9.534 20.084C9.561 20.541 9.902 20.95 10.405 21.058L10.601 21.101C11.521 21.3 12.476 21.3 13.397 21.101L13.593 21.058C14.096 20.95 14.437 20.541 14.465 20.084C14.491 19.651 14.577 19.047 14.688 18.41M4.25 9.766C4.25 5.59 7.744 2.25 12 2.25C16.256 2.25 19.75 5.591 19.75 9.766C19.75 12.19 18.746 14.393 16.853 15.784C16.7892 15.825 16.7421 15.8874 16.72 15.96C16.5773 16.5719 16.446 17.1863 16.326 17.803C16.143 18.741 15.994 19.651 15.963 20.175C15.893 21.333 15.041 22.28 13.911 22.525L13.715 22.567C12.585 22.811 11.415 22.811 10.285 22.567L10.089 22.525C8.959 22.281 8.107 21.333 8.037 20.175C8.006 19.651 7.857 18.741 7.674 17.803C7.55403 17.1863 7.42267 16.5719 7.28 15.96C7.25793 15.8874 7.21079 15.825 7.147 15.784C5.254 14.394 4.25 12.19 4.25 9.767" fill="#E5E5E5"/>
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            `;
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />`;
+
+                ideaContainer.innerHTML = cardHTML;
         }
 
-        function pinCurrentIdea() {
+        function loadPreviousIdea() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                currentIdea = ideaHistory[historyIndex];
+                displayIdea(currentIdea);
+                updateNavigationButtons();
+            }
+        }
+
+        function updateNavigationButtons() {
+            // Update previous button
+            prevBtn.disabled = historyIndex <= 0;
+
+            // Update next button - enabled if we have ideas and we can go forward
+            nextBtn.disabled = ideaHistory.length === 0;
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.addEventListener('click', saveCurrentIdea);
+
+            // Ensure save button exists
+            if (saveBtn) {
+                // Attach click handler only once
+                if (!saveBtn._listenerAttached) {
+                    saveBtn.addEventListener('click', saveCurrentIdea);
+                    saveBtn._listenerAttached = true;
+                }
+
+                // Determine if current idea is already pinned
+                const pinned = getPinnedList();
+                const idKey = currentIdea ? (currentIdea.id || currentIdea.name || JSON.stringify(currentIdea)) : null;
+                const isPinned = idKey ? pinned.some(c => (c.id || c.name || JSON.stringify(c)) === idKey) : false;
+
+                // Update button UI and hint
+                const hint = document.getElementById('saveButtonHint');
+                if (isPinned) {
+                    saveBtn.classList.remove('save-btn-inactive');
+                    saveBtn.classList.add('save-btn-active');
+                    if (hint) hint.textContent = 'Saved';
+                } else {
+                    saveBtn.classList.remove('save-btn-active');
+                    saveBtn.classList.add('save-btn-inactive');
+                    if (hint) hint.textContent = 'Save';
+                }
+            }
+        }
+
+        function saveCurrentIdea() {
             if (!currentIdea) return;
+            const saveBtn = document.getElementById('saveBtn');
+            const hint = document.getElementById('saveButtonHint');
+            if (!saveBtn) return;
 
-            // Use the app's method to add pinned card
-            app.state.addPinnedCard(currentIdea);
+            const idKey = currentIdea.id || currentIdea.name || JSON.stringify(currentIdea);
 
-            // Show feedback
-            pinBtn.textContent = '✅ Pinned!';
-            pinBtn.disabled = true;
+            let pinnedList = getPinnedList();
+            let isPinned = pinnedList.some(c => (c.id || c.name || JSON.stringify(c)) === idKey);
 
-            // Auto-load next idea
-            setTimeout(() => {
-                loadNextIdea();
-                pinBtn.textContent = '📌 Pin';
-            }, 1000);
+            // Toggle behavior
+            if (isPinned) {
+                // Remove pinned
+                if (typeof app.state?.removePinnedCard === 'function') {
+                    app.state.removePinnedCard(currentIdea);
+                } else {
+                    pinnedList = pinnedList.filter(c => (c.id || c.name || JSON.stringify(c)) !== idKey);
+                    setPinnedList(pinnedList);
+                }
+
+                // UI feedback for removed
+                saveBtn.classList.remove('save-btn-active');
+                saveBtn.classList.add('save-btn-inactive');
+                saveBtn.style.transform = 'scale(0.95)';
+                hint.textContent = 'Save';
+                setTimeout(() => { saveBtn.style.transform = ''; }, 150);
+            } else {
+                // Add pinned
+                if (typeof app.state?.addPinnedCard === 'function') {
+                    app.state.addPinnedCard(currentIdea);
+                } else {
+                    pinnedList.push(currentIdea);
+                    setPinnedList(pinnedList);
+                }
+
+                // UI feedback for added
+                saveBtn.classList.remove('save-btn-inactive');
+                saveBtn.classList.add('save-btn-active');
+                saveBtn.style.transform = 'scale(1.2)';
+                hint.textContent = 'Saved';
+                setTimeout(() => { saveBtn.style.transform = ''; }, 300);
+            }
         }
 
         // Bottom navigation

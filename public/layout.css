@@ -55,7 +55,7 @@ body {
 /* Main Content */
 .main-content {
     flex: 1;
-    padding: 1.5rem;
+    padding: 0.7rem;
     display: flex;
     flex-direction: column;
     overflow-y: auto;

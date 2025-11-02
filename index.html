@@ -3,118 +3,761 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacker News AI Explorer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Idea Foundry - AI-Powered Idea Discovery</title>
     <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            color: #1f2937;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        button:disabled {
+            cursor: not-allowed;
+        }
+        input {
+            font-family: inherit;
+        }
+        a {
+            color: inherit;
+            text-decoration: inherit;
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+        .flex {
+            display: flex;
+        }
+        .flex-1 {
+            flex: 1;
+        }
+        .flex-col {
+            flex-direction: column;
+        }
+        .flex-row-reverse {
+            flex-direction: row-reverse;
+        }
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        .flex-shrink-0 {
+            flex-shrink: 0;
+        }
+        .grid {
+            display: grid;
+        }
+        .items-start {
+            align-items: flex-start;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .justify-between {
+            justify-content: space-between;
+        }
+        .space-x-2 > * + * {
+            margin-left: 0.5rem;
+        }
+        .space-x-3 > * + * {
+            margin-left: 0.75rem;
+        }
+        .space-x-4 > * + * {
+            margin-left: 1rem;
+        }
+        .space-x-reverse > * + * {
+            margin-right: 0.75rem;
+            margin-left: 0;
+        }
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+        .gap-1 {
+            gap: 0.25rem;
+        }
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        .gap-3 {
+            gap: 0.75rem;
+        }
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        /* Layout */
+        .container {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .max-w-md {
+            max-width: 28rem;
+        }
+        .max-w-2xl {
+            max-width: 42rem;
+        }
+        .max-w-3xl {
+            max-width: 48rem;
+        }
+        .max-w-4xl {
+            max-width: 56rem;
+        }
+        .max-w-6xl {
+            max-width: 72rem;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .w-5 {
+            width: 1.25rem;
+        }
+        .w-8 {
+            width: 2rem;
+        }
+        .h-5 {
+            height: 1.25rem;
+        }
+        .h-8 {
+            height: 2rem;
+        }
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Spacing */
+        .p-2 {
+            padding: 0.5rem;
+        }
+        .p-3 {
+            padding: 0.75rem;
+        }
+        .p-4 {
+            padding: 1rem;
+        }
+        .p-6 {
+            padding: 1.5rem;
+        }
+        .p-8 {
+            padding: 2rem;
+        }
+        .px-2 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .py-12 {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+        .m-4 {
+            margin: 1rem;
+        }
+        .mx-4 {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        .ml-1 {
+            margin-left: 0.25rem;
+        }
+        
+        /* Background Colors */
+        body {
+            background: linear-gradient(to bottom right, #faf5ff, #eff6ff);
+        }
+        .bg-white {
+            background-color: #ffffff;
+        }
+        .bg-gray-100 {
+            background-color: #f3f4f6;
+        }
+        .bg-gray-500 {
+            background-color: #6b7280;
+        }
+        .bg-gray-600 {
+            background-color: #4b5563;
+        }
+        .bg-blue-500 {
+            background-color: #3b82f6;
+        }
+        .bg-blue-600 {
+            background-color: #2563eb;
+        }
+        .bg-blue-100 {
+            background-color: #dbeafe;
+        }
+        .bg-purple-50 {
+            background-color: #faf5ff;
+        }
+        .bg-purple-100 {
+            background-color: #f3e8ff;
+        }
+        .bg-purple-600 {
+            background-color: #9333ea;
+        }
+        .bg-purple-700 {
+            background-color: #7e22ce;
+        }
+        .bg-purple-800 {
+            background-color: #6b21a8;
+        }
+        .bg-green-500 {
+            background-color: #22c55e;
+        }
+        .bg-green-600 {
+            background-color: #16a34a;
+        }
+        .bg-green-700 {
+            background-color: #15803d;
+        }
+        .bg-green-100 {
+            background-color: #dcfce7;
+        }
+        .bg-red-100 {
+            background-color: #fee2e2;
+        }
+        .bg-red-500 {
+            background-color: #ef4444;
+        }
+        
+        /* Text Colors */
+        .text-white {
+            color: #ffffff;
+        }
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+        .text-gray-500 {
+            color: #6b7280;
+        }
+        .text-gray-600 {
+            color: #4b5563;
+        }
+        .text-gray-700 {
+            color: #374151;
+        }
+        .text-gray-800 {
+            color: #1f2937;
+        }
+        .text-blue-700 {
+            color: #1d4ed8;
+        }
+        .text-purple-100 {
+            color: #f3e8ff;
+        }
+        .text-purple-600 {
+            color: #9333ea;
+        }
+        .text-purple-700 {
+            color: #7e22ce;
+        }
+        .text-purple-900 {
+            color: #581c87;
+        }
+        .text-green-700 {
+            color: #15803d;
+        }
+        .text-red-600 {
+            color: #dc2626;
+        }
+        .text-red-700 {
+            color: #b91c1c;
+        }
+        
+        /* Border */
+        .border {
+            border-width: 1px;
+        }
+        .border-2 {
+            border-width: 2px;
+        }
+        .border-t {
+            border-top-width: 1px;
+        }
+        .border-gray-300 {
+            border-color: #d1d5db;
+        }
+        .border-purple-300 {
+            border-color: #d8b4fe;
+        }
+        .border-purple-500 {
+            border-color: #a855f7;
+        }
+        .border-red-400 {
+            border-color: #f87171;
+        }
+        .border-green-400 {
+            border-color: #4ade80;
+        }
+        .border-transparent {
+            border-color: transparent;
+        }
+        
+        /* Border Radius */
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        
+        /* Shadow */
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Text */
+        .text-xs {
+            font-size: 0.75rem;
+        }
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        .font-medium {
+            font-weight: 500;
+        }
+        .font-semibold {
+            font-weight: 600;
+        }
+        .font-bold {
+            font-weight: 700;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        
+        /* Display */
+        .overflow-y-auto {
+            overflow-y: auto;
+        }
+        
+        /* Position */
+        .fixed {
+            position: fixed;
+        }
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        
+        /* Z-Index */
+        .z-50 {
+            z-index: 50;
+        }
+        
+        /* Opacity */
+        .bg-opacity-50 {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .bg-opacity-20 {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .bg-opacity-30 {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Transition */
+        button, input {
+            transition: all 0.2s ease;
+        }
+        
+        /* Hover Effects */
+        button:not(:disabled):hover.bg-purple-600 {
+            background-color: #7e22ce;
+        }
+        button:not(:disabled):hover.bg-purple-700 {
+            background-color: #6b21a8;
+        }
+        button:not(:disabled):hover.bg-blue-600 {
+            background-color: #1d4ed8;
+        }
+        button:not(:disabled):hover.bg-blue-700 {
+            background-color: #1e40af;
+        }
+        button:not(:disabled):hover.bg-green-600 {
+            background-color: #15803d;
+        }
+        button:not(:disabled):hover.bg-green-700 {
+            background-color: #166534;
+        }
+        button:not(:disabled):hover.bg-gray-500 {
+            background-color: #4b5563;
+        }
+        button:not(:disabled):hover.bg-gray-600 {
+            background-color: #374151;
+        }
+        button:disabled {
+            background-color: #9ca3af;
+        }
+        .hover\:bg-opacity-30:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        a.text-purple-600:hover {
+            color: #7e22ce;
+        }
+        input:focus {
+            outline: 2px solid #9333ea;
+            border-color: transparent;
+        }
+        button:focus {
+            outline: 2px solid #9333ea;
+            outline-offset: 2px;
+        }
+        
+        /* Header Gradient */
+        .bg-gradient-to-r {
+            background: linear-gradient(to right, #9333ea, #2563eb);
+        }
+        
+        /* Grid */
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        @media (min-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        .col-span-full {
+            grid-column: 1 / -1;
+        }
+        
+        /* Custom Styles */
+        #apiKeyModal {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        strong {
+            font-weight: 600;
+        }
+        em {
+            font-style: italic;
+        }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         .animate-spin {
             animation: spin 1s linear infinite;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto max-w-4xl p-4 h-screen flex flex-col">
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <!-- API Key Modal -->
+    <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">🔑 API Key Required</h2>
+            <p class="text-gray-600 mb-4">
+                To use Idea Foundry, you need a Gemini API key. 
+                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-purple-600 hover:text-purple-700 underline">
+                    Get one here
+                </a>
+            </p>
+            <input 
+                type="text" 
+                id="apiKeyInput" 
+                placeholder="Enter your Gemini API key" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-2"
+            />
+            <div id="apiKeyError" class="text-red-600 text-sm mb-2 hidden">Please enter a valid API key</div>
+            <button 
+                id="saveApiKeyBtn"
+                class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-medium"
+            >
+                Save and Start
+            </button>
+        </div>
+    </div>
+
+    <div class="container mx-auto max-w-6xl p-4 min-h-screen flex flex-col">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-t-lg shadow-lg">
-            <h1 class="text-3xl font-bold">🔍 Hacker News AI Explorer</h1>
-            <p class="text-orange-100 mt-2">Ask questions about Hacker News stories and get AI-powered insights</p>
-        </div>
-
-        <!-- Chat Messages Area -->
-        <div id="chatMessages" class="flex-1 bg-white p-6 overflow-y-auto space-y-4 shadow-lg">
-            <!-- Welcome message -->
-            <div class="flex items-start space-x-3">
-                <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                    AI
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-6 rounded-lg shadow-lg mb-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold">💡 Idea Foundry</h1>
+                    <p class="text-purple-100 mt-2">Discover, curate, and develop ideas with AI</p>
                 </div>
-                <div class="bg-gray-100 rounded-lg p-4 max-w-3xl">
-                    <p class="text-gray-800">
-                        Welcome! I can help you explore Hacker News. Try asking questions like:
-                    </p>
-                    <ul class="mt-2 text-gray-700 text-sm list-disc list-inside space-y-1">
-                        <li>"What are the top stories right now?"</li>
-                        <li>"Find stories about AI"</li>
-                        <li>"Show me the latest tech news"</li>
-                        <li>"What's trending in programming?"</li>
-                    </ul>
+                <div class="flex space-x-2">
+                    <button id="navDeck" class="px-4 py-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors font-medium">
+                        The Deck
+                    </button>
+                    <button id="navCollection" class="px-4 py-2 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition-colors font-medium">
+                        Collection <span id="collectionCount" class="bg-purple-800 px-2 py-1 rounded-full text-xs ml-1">0</span>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Input Form -->
-        <div class="bg-white p-4 rounded-b-lg shadow-lg">
-            <form id="chatForm" class="flex space-x-3">
-                <input 
-                    type="text" 
-                    id="userInput" 
-                    placeholder="Ask about Hacker News stories..." 
-                    class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    required
-                />
-                <button 
-                    type="submit" 
-                    id="submitBtn"
-                    class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                    Send
-                </button>
-            </form>
-            <div class="mt-2 text-xs text-gray-500 text-center">
-                Note: You need to provide your Gemini API key to use this app
+        <!-- The Deck Screen -->
+        <div id="deckScreen" class="flex-1 flex items-center justify-center">
+            <div class="max-w-2xl w-full">
+                <div id="currentCard" class="bg-white rounded-xl shadow-xl p-8 mb-6 card">
+                    <div id="cardContent" class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to Idea Foundry</h2>
+                        <p class="text-gray-600 mb-4">
+                            Click "Next Idea" to discover AI-generated ideas. Pin the ones you like to your collection!
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">AI</span>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">Ideas</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">Brainstorming</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <button 
+                        id="nextCardBtn"
+                        class="flex-1 px-6 py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-medium text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                        Next Idea
+                    </button>
+                    <button 
+                        id="pinCardBtn"
+                        class="flex-1 px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors font-medium text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        📌 Pin This Idea
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- API Key Modal -->
-        <div id="apiKeyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">🔑 API Key Required</h2>
-                <p class="text-gray-600 mb-4">
-                    To use this app, you need a Gemini API key. 
-                    <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-orange-500 hover:text-orange-600 underline">
-                        Get one here
-                    </a>
-                </p>
-                <input 
-                    type="text" 
-                    id="apiKeyInput" 
-                    placeholder="Enter your Gemini API key" 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-2"
-                />
-                <div id="apiKeyError" class="text-red-600 text-sm mb-2 hidden">Please enter a valid API key</div>
-                <button 
-                    id="saveApiKeyBtn"
-                    class="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors font-medium"
-                >
-                    Save and Start
-                </button>
+        <!-- The Collection Screen -->
+        <div id="collectionScreen" class="flex-1 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Your Pinned Ideas</h2>
+                    <button 
+                        id="brainstormBtn"
+                        class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        💭 Brainstorm with Selected
+                    </button>
+                </div>
+                <div id="collectionGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="text-center text-gray-500 py-12 col-span-full">
+                        No pinned ideas yet. Go to The Deck to discover and pin ideas!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Workbench Screen -->
+        <div id="workbenchScreen" class="flex-1 hidden flex-col">
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">🔧 Workbench - Brainstorming Session</h2>
+                <div id="contextCards" class="flex flex-wrap gap-3 mb-4">
+                    <!-- Context cards will be displayed here -->
+                </div>
+            </div>
+            
+            <div class="flex-1 bg-white rounded-lg shadow-lg flex flex-col" style="min-height: 400px;">
+                <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            AI
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-4 max-w-3xl">
+                            <p class="text-gray-800">
+                                Let's brainstorm together! I've reviewed the ideas you selected. What would you like to explore or develop?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t p-4">
+                    <form id="chatForm" class="flex space-x-3 mb-2">
+                        <input 
+                            type="text" 
+                            id="userInput" 
+                            placeholder="Discuss your ideas with AI..." 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            required
+                        />
+                        <button 
+                            type="submit" 
+                            id="sendBtn"
+                            class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            Send
+                        </button>
+                    </form>
+                    <div class="flex space-x-2">
+                        <button 
+                            id="saveNewIdeaBtn"
+                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            💾 Save as New Idea
+                        </button>
+                        <button 
+                            id="exitWorkbenchBtn"
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none transition-colors"
+                        >
+                            ← Back to Collection
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Import TOON library from local file
+        import { encode, decode } from './toon-lib.js';
+
         // Configuration
         const GEMINI_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
-        const HN_API_BASE = 'https://hacker-news.firebaseio.com/v0';
         
         // State
         let apiKey = localStorage.getItem('gemini_api_key') || '';
+        let currentCard = null;
+        let pinnedCards = JSON.parse(localStorage.getItem('pinned_cards') || '[]');
+        let selectedCardIds = new Set();
+        let conversationHistory = [];
+        let contextCards = [];
         
         // DOM Elements
-        const chatMessages = document.getElementById('chatMessages');
-        const chatForm = document.getElementById('chatForm');
-        const userInput = document.getElementById('userInput');
-        const submitBtn = document.getElementById('submitBtn');
         const apiKeyModal = document.getElementById('apiKeyModal');
         const apiKeyInput = document.getElementById('apiKeyInput');
         const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
         const apiKeyError = document.getElementById('apiKeyError');
+        
+        const navDeck = document.getElementById('navDeck');
+        const navCollection = document.getElementById('navCollection');
+        const collectionCount = document.getElementById('collectionCount');
+        
+        const deckScreen = document.getElementById('deckScreen');
+        const collectionScreen = document.getElementById('collectionScreen');
+        const workbenchScreen = document.getElementById('workbenchScreen');
+        
+        const cardContent = document.getElementById('cardContent');
+        const nextCardBtn = document.getElementById('nextCardBtn');
+        const pinCardBtn = document.getElementById('pinCardBtn');
+        
+        const collectionGrid = document.getElementById('collectionGrid');
+        const brainstormBtn = document.getElementById('brainstormBtn');
+        
+        const chatMessages = document.getElementById('chatMessages');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const saveNewIdeaBtn = document.getElementById('saveNewIdeaBtn');
+        const exitWorkbenchBtn = document.getElementById('exitWorkbenchBtn');
+        const contextCardsDiv = document.getElementById('contextCards');
 
         // Initialize
         if (apiKey) {
             apiKeyModal.style.display = 'none';
         }
+        updateCollectionCount();
 
         // API Key handling
         saveApiKeyBtn.addEventListener('click', () => {
@@ -129,7 +772,68 @@
             }
         });
 
-        // Chat form submission
+        // Navigation
+        navDeck.addEventListener('click', () => showScreen('deck'));
+        navCollection.addEventListener('click', () => showScreen('collection'));
+        exitWorkbenchBtn.addEventListener('click', () => showScreen('collection'));
+
+        function showScreen(screen) {
+            deckScreen.classList.add('hidden');
+            collectionScreen.classList.add('hidden');
+            workbenchScreen.classList.add('hidden');
+            
+            if (screen === 'deck') {
+                deckScreen.classList.remove('hidden');
+            } else if (screen === 'collection') {
+                collectionScreen.classList.remove('hidden');
+                renderCollection();
+            } else if (screen === 'workbench') {
+                workbenchScreen.classList.remove('hidden');
+            }
+        }
+
+        // The Deck - Next Card
+        nextCardBtn.addEventListener('click', async () => {
+            if (!apiKey) {
+                apiKeyModal.style.display = 'flex';
+                return;
+            }
+
+            nextCardBtn.disabled = true;
+            pinCardBtn.disabled = true;
+            
+            try {
+                const card = await generateNewIdea();
+                currentCard = card;
+                renderCurrentCard(card);
+                pinCardBtn.disabled = false;
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                nextCardBtn.disabled = false;
+            }
+        });
+
+        // The Deck - Pin Card
+        pinCardBtn.addEventListener('click', () => {
+            if (currentCard) {
+                pinnedCards.push(currentCard);
+                localStorage.setItem('pinned_cards', JSON.stringify(pinnedCards));
+                updateCollectionCount();
+                showNotification('Idea pinned to collection! 📌');
+                pinCardBtn.disabled = true;
+            }
+        });
+
+        // The Collection - Brainstorm
+        brainstormBtn.addEventListener('click', () => {
+            if (selectedCardIds.size > 0) {
+                contextCards = pinnedCards.filter(card => selectedCardIds.has(card.id));
+                startBrainstormSession(contextCards);
+            }
+        });
+
+        // The Workbench - Chat
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -138,50 +842,283 @@
                 return;
             }
 
-            const query = userInput.value.trim();
-            if (!query) return;
+            const message = userInput.value.trim();
+            if (!message) return;
 
-            // Disable input while processing
             userInput.disabled = true;
-            submitBtn.disabled = true;
+            sendBtn.disabled = true;
+            saveNewIdeaBtn.disabled = true;
 
-            // Add user message
-            addMessage(query, 'user');
+            addChatMessage(message, 'user');
             userInput.value = '';
 
-            // Add loading indicator
             const loadingId = addLoadingMessage();
 
             try {
-                // Fetch Hacker News data
-                const hnData = await fetchHackerNewsData(query);
-                
-                // Send to Gemini API
-                const response = await analyzeWithGemini(query, hnData);
-                
-                // Remove loading and show response
+                const response = await sendBrainstormMessage(message);
                 removeMessage(loadingId);
-                addMessage(response, 'ai');
+                addChatMessage(response, 'ai');
             } catch (error) {
                 removeMessage(loadingId);
-                addMessage(`❌ Error: ${error.message}`, 'error');
+                addChatMessage(`❌ Error: ${error.message}`, 'error');
             } finally {
                 userInput.disabled = false;
-                submitBtn.disabled = false;
+                sendBtn.disabled = false;
+                saveNewIdeaBtn.disabled = false;
                 userInput.focus();
             }
         });
 
-        // Add message to chat
-        function addMessage(content, type) {
+        // The Workbench - Save New Idea
+        saveNewIdeaBtn.addEventListener('click', async () => {
+            if (!apiKey) {
+                apiKeyModal.style.display = 'flex';
+                return;
+            }
+
+            saveNewIdeaBtn.disabled = true;
+            sendBtn.disabled = true;
+            userInput.disabled = true;
+
+            const loadingId = addLoadingMessage();
+
+            try {
+                const newCard = await saveNewIdea();
+                removeMessage(loadingId);
+                
+                pinnedCards.push(newCard);
+                localStorage.setItem('pinned_cards', JSON.stringify(pinnedCards));
+                updateCollectionCount();
+                
+                addChatMessage(`✅ Success! Your new idea "${newCard.title}" has been saved to your collection.`, 'success');
+                
+                setTimeout(() => {
+                    showScreen('collection');
+                }, 2000);
+            } catch (error) {
+                removeMessage(loadingId);
+                addChatMessage(`❌ Error: ${error.message}`, 'error');
+                saveNewIdeaBtn.disabled = false;
+                sendBtn.disabled = false;
+                userInput.disabled = false;
+            }
+        });
+
+        // Generate New Idea (The Deck)
+        async function generateNewIdea() {
+            const systemPrompt = `You are an idea generator. Respond only with a TOON-formatted string for one new idea. Use the header: cards[1]{id,title,summary,tags,source}: and set the source to 'Initial Generation'. Generate creative, interesting ideas across various domains.`;
+            
+            const response = await callGeminiAPI(systemPrompt, 'Generate a new, interesting idea.');
+            
+            try {
+                const decoded = decode(response);
+                
+                // Handle both array and object responses
+                if (Array.isArray(decoded) && decoded.length > 0) {
+                    return decoded[0];
+                } else if (decoded && typeof decoded === 'object' && !Array.isArray(decoded)) {
+                    return decoded;
+                }
+                
+                throw new Error('Invalid card format received from AI');
+            } catch (error) {
+                console.error('Failed to decode TOON response:', response);
+                throw new Error(`Failed to parse AI response: ${error.message}`);
+            }
+        }
+
+        // Start Brainstorm Session (The Workbench)
+        function startBrainstormSession(cards) {
+            conversationHistory = [];
+            contextCards = cards;
+            
+            // Reset chat
+            chatMessages.innerHTML = '';
+            
+            // Display context cards
+            contextCardsDiv.innerHTML = cards.map(card => `
+                <div class="bg-purple-100 border border-purple-300 rounded-lg p-3 text-sm">
+                    <div class="font-semibold text-purple-900">${escapeHtml(card.title)}</div>
+                    <div class="text-purple-700 text-xs mt-1">${escapeHtml(card.summary)}</div>
+                </div>
+            `).join('');
+            
+            // Add initial AI message
+            const toonContext = encode(cards);
+            const welcomeMessage = `Let's brainstorm together! I've reviewed your selected ideas:\n\n${cards.map(c => `• ${c.title}: ${c.summary}`).join('\n')}\n\nWhat would you like to explore or develop?`;
+            addChatMessage(welcomeMessage, 'ai');
+            
+            // Store context in conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: `Context (TOON format): ${toonContext}`
+            });
+            conversationHistory.push({
+                role: 'assistant',
+                content: welcomeMessage
+            });
+            
+            showScreen('workbench');
+        }
+
+        // Send Brainstorm Message
+        async function sendBrainstormMessage(message) {
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+            
+            const toonContext = encode(contextCards);
+            const systemPrompt = `You are an expert creative strategist. The user has provided these initial ideas in TOON format: ${toonContext}. Your goal is to help them synthesize these into a new concept. Discuss it with them. Do not respond in TOON format during the discussion; use plain text.`;
+            
+            const response = await callGeminiAPI(systemPrompt, message, conversationHistory.slice(1));
+            
+            conversationHistory.push({
+                role: 'assistant',
+                content: response
+            });
+            
+            return response;
+        }
+
+        // Save New Idea from Brainstorm
+        async function saveNewIdea() {
+            const systemPrompt = `Now, respond only with a single TOON-formatted string for the new card we just developed. Use the header: cards[1]{id,title,summary,tags,source}: and set the source to 'From Brainstorm'.`;
+            
+            const message = 'Please summarize our entire discussion into a new, refined idea card. Set the source to "From Brainstorm".';
+            
+            const response = await callGeminiAPI(systemPrompt, message, conversationHistory);
+            
+            try {
+                const decoded = decode(response);
+                
+                // Handle both array and object responses
+                if (Array.isArray(decoded) && decoded.length > 0) {
+                    return decoded[0];
+                } else if (decoded && typeof decoded === 'object' && !Array.isArray(decoded)) {
+                    return decoded;
+                }
+                
+                throw new Error('Invalid card format received from AI');
+            } catch (error) {
+                console.error('Failed to decode TOON response:', response);
+                throw new Error(`Failed to parse AI response: ${error.message}`);
+            }
+        }
+
+        // Call Gemini API
+        async function callGeminiAPI(systemPrompt, userMessage, history = []) {
+            const contents = [
+                {
+                    role: 'user',
+                    parts: [{ text: systemPrompt }]
+                }
+            ];
+            
+            // Add conversation history
+            for (const msg of history) {
+                contents.push({
+                    role: msg.role === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.content }]
+                });
+            }
+            
+            // Add current message
+            contents.push({
+                role: 'user',
+                parts: [{ text: userMessage }]
+            });
+
+            const response = await fetch(`${GEMINI_API_ENDPOINT}?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ contents })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+                throw new Error('Invalid response from Gemini API');
+            }
+
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // UI Functions
+        function renderCurrentCard(card) {
+            cardContent.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">${escapeHtml(card.title)}</h2>
+                <p class="text-gray-600 mb-4">${escapeHtml(card.summary)}</p>
+                <div class="flex flex-wrap gap-2 mb-2">
+                    ${card.tags ? card.tags.map(tag => 
+                        `<span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">${escapeHtml(tag)}</span>`
+                    ).join('') : ''}
+                </div>
+                <div class="text-xs text-gray-500 mt-4">Source: ${escapeHtml(card.source || 'Unknown')}</div>
+            `;
+            cardContent.classList.add('fade-in');
+        }
+
+        function renderCollection() {
+            if (pinnedCards.length === 0) {
+                collectionGrid.innerHTML = `
+                    <div class="text-center text-gray-500 py-12 col-span-full">
+                        No pinned ideas yet. Go to The Deck to discover and pin ideas!
+                    </div>
+                `;
+                return;
+            }
+
+            collectionGrid.innerHTML = pinnedCards.map(card => `
+                <div class="card bg-white rounded-lg shadow-md p-4 cursor-pointer border-2 ${selectedCardIds.has(card.id) ? 'border-purple-500 bg-purple-50' : 'border-transparent'}" 
+                     data-card-id="${card.id}">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">${escapeHtml(card.title)}</h3>
+                    <p class="text-gray-600 text-sm mb-3">${escapeHtml(card.summary)}</p>
+                    <div class="flex flex-wrap gap-1 mb-2">
+                        ${card.tags ? card.tags.slice(0, 3).map(tag => 
+                            `<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">${escapeHtml(tag)}</span>`
+                        ).join('') : ''}
+                    </div>
+                    <div class="text-xs text-gray-400">Source: ${escapeHtml(card.source || 'Unknown')}</div>
+                </div>
+            `).join('');
+
+            // Add click handlers
+            document.querySelectorAll('[data-card-id]').forEach(cardEl => {
+                cardEl.addEventListener('click', () => {
+                    const cardId = cardEl.dataset.cardId;
+                    if (selectedCardIds.has(cardId)) {
+                        selectedCardIds.delete(cardId);
+                        cardEl.classList.remove('border-purple-500', 'bg-purple-50');
+                        cardEl.classList.add('border-transparent');
+                    } else {
+                        selectedCardIds.add(cardId);
+                        cardEl.classList.add('border-purple-500', 'bg-purple-50');
+                        cardEl.classList.remove('border-transparent');
+                    }
+                    brainstormBtn.disabled = selectedCardIds.size === 0;
+                });
+            });
+
+            brainstormBtn.disabled = selectedCardIds.size === 0;
+        }
+
+        function addChatMessage(content, type) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex items-start space-x-3';
+            messageDiv.className = 'flex items-start space-x-3 fade-in';
             messageDiv.dataset.messageId = Date.now();
 
             if (type === 'user') {
                 messageDiv.classList.add('flex-row-reverse', 'space-x-reverse');
                 messageDiv.innerHTML = `
-                    <div class="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         U
                     </div>
                     <div class="bg-blue-500 text-white rounded-lg p-4 max-w-3xl">
@@ -190,19 +1127,28 @@
                 `;
             } else if (type === 'error') {
                 messageDiv.innerHTML = `
-                    <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div class="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         !
                     </div>
                     <div class="bg-red-100 border border-red-400 text-red-700 rounded-lg p-4 max-w-3xl">
                         ${escapeHtml(content)}
                     </div>
                 `;
+            } else if (type === 'success') {
+                messageDiv.innerHTML = `
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                        ✓
+                    </div>
+                    <div class="bg-green-100 border border-green-400 text-green-700 rounded-lg p-4 max-w-3xl">
+                        ${escapeHtml(content)}
+                    </div>
+                `;
             } else {
                 messageDiv.innerHTML = `
-                    <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                         AI
                     </div>
-                    <div class="bg-gray-100 rounded-lg p-4 max-w-3xl">
+                    <div class="bg-purple-50 rounded-lg p-4 max-w-3xl">
                         ${formatResponse(content)}
                     </div>
                 `;
@@ -213,20 +1159,19 @@
             return messageDiv.dataset.messageId;
         }
 
-        // Add loading indicator
         function addLoadingMessage() {
             const loadingDiv = document.createElement('div');
             const loadingId = 'loading-' + Date.now();
             loadingDiv.dataset.messageId = loadingId;
             loadingDiv.className = 'flex items-start space-x-3';
             loadingDiv.innerHTML = `
-                <div class="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div class="flex-shrink-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                     AI
                 </div>
-                <div class="bg-gray-100 rounded-lg p-4">
+                <div class="bg-purple-50 rounded-lg p-4">
                     <div class="flex items-center space-x-2">
-                        <div class="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                        <span class="text-gray-600">Analyzing Hacker News data...</span>
+                        <div class="w-5 h-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span class="text-gray-600">Thinking...</span>
                     </div>
                 </div>
             `;
@@ -235,7 +1180,6 @@
             return loadingId;
         }
 
-        // Remove message by ID
         function removeMessage(messageId) {
             const message = chatMessages.querySelector(`[data-message-id="${messageId}"]`);
             if (message) {
@@ -243,117 +1187,40 @@
             }
         }
 
-        // Fetch Hacker News data
-        async function fetchHackerNewsData(query) {
-            try {
-                // Fetch top stories
-                const topStoriesRes = await fetch(`${HN_API_BASE}/topstories.json`);
-                if (!topStoriesRes.ok) throw new Error('Failed to fetch top stories');
-                
-                const topStoryIds = await topStoriesRes.json();
-                
-                // Fetch first 30 stories
-                const storyIds = topStoryIds.slice(0, 30);
-                const storyPromises = storyIds.map(id => 
-                    fetch(`${HN_API_BASE}/item/${id}.json`)
-                        .then(res => {
-                            if (!res.ok) return null;
-                            return res.json();
-                        })
-                        .catch(() => null)
-                );
-                
-                const stories = await Promise.all(storyPromises);
-                
-                // Filter out null/invalid stories and format
-                const validStories = stories
-                    .filter(story => story && story.title)
-                    .map(story => ({
-                        title: story.title,
-                        url: story.url || `https://news.ycombinator.com/item?id=${story.id}`,
-                        score: story.score || 0,
-                        author: story.by || 'unknown',
-                        time: new Date(story.time * 1000).toISOString(),
-                        comments: story.descendants || 0
-                    }));
-
-                return validStories;
-            } catch (error) {
-                throw new Error(`Failed to fetch Hacker News data: ${error.message}`);
-            }
+        function updateCollectionCount() {
+            collectionCount.textContent = pinnedCards.length;
         }
 
-        // Analyze with Gemini API
-        async function analyzeWithGemini(query, hnData) {
-            try {
-                const prompt = `User Query: ${query}
-
-Hacker News Data (top 30 stories):
-${JSON.stringify(hnData, null, 2)}
-
-Please analyze the Hacker News data above and provide a helpful response to the user's query. 
-If the query asks for specific stories, filter and present the most relevant ones.
-Format your response in a clear, conversational manner.`;
-
-                const response = await fetch(`${GEMINI_API_ENDPOINT}?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-                }
-
-                const data = await response.json();
-                
-                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                    throw new Error('Invalid response from Gemini API');
-                }
-
-                return data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                throw new Error(`Gemini API error: ${error.message}`);
-            }
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
         }
 
-        // Format response with basic markdown-like rendering
+        function showError(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in';
+            notification.textContent = '❌ ' + message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+
         function formatResponse(text) {
-            // Escape HTML first
             text = escapeHtml(text);
-            
-            // Convert **bold** to <strong> first
             text = text.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
-            
-            // Convert remaining single * to <em> (avoiding already processed bold markers)
-            // This approach works in all browsers including Safari
             text = text.replace(/\*([^\*<>]+)\*/g, (match, content) => {
-                // Check if this is part of an incomplete ** pattern
                 if (content.includes('<strong>') || content.includes('</strong>')) {
                     return match;
                 }
                 return '<em>' + content + '</em>';
             });
-            
-            // Convert newlines to <br>
             text = text.replace(/\n/g, '<br>');
-            
-            // Convert URLs to links
-            text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-orange-500 hover:text-orange-600 underline">$1</a>');
-            
+            text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-purple-600 hover:text-purple-700 underline">$1</a>');
             return text;
         }
 
-        // Escape HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;

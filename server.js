@@ -15,8 +15,13 @@ const GEMINI_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/mo
 
 /**
  * Call Gemini API with system prompt, user message, and optional conversation history
+ * @param {string} apiKey - Gemini API key
+ * @param {string} systemPrompt - System instruction prompt
+ * @param {string} userMessage - User message
+ * @param {Array} history - Conversation history
+ * @param {boolean} enableGrounding - Enable Google Search grounding (default: false)
  */
-async function callGeminiAPI(apiKey, systemPrompt, userMessage, history = []) {
+async function callGeminiAPI(apiKey, systemPrompt, userMessage, history = [], enableGrounding = false) {
     // Combine system prompt and user message for single-turn conversation
     const combinedPrompt = `${systemPrompt}\n\n${userMessage}`;
     
@@ -36,13 +41,27 @@ async function callGeminiAPI(apiKey, systemPrompt, userMessage, history = []) {
         parts: [{ text: combinedPrompt }]
     });
 
+    // Build request body
+    const requestBody = {
+        contents
+    };
+
+    // Add Google Search grounding tool if enabled
+    if (enableGrounding) {
+        requestBody.tools = [
+            {
+                googleSearch: {}
+            }
+        ];
+    }
+
     const response = await fetch(GEMINI_API_ENDPOINT, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'x-goog-api-key': apiKey
         },
-        body: JSON.stringify({ contents })
+        body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
@@ -248,8 +267,10 @@ Begin your response with the TOON header followed by ONE indented pipe-delimited
             console.log('System Prompt:', systemPrompt);
             console.log('User Message:', userMessage);
 
-            // Call Gemini API
-            const response = await callGeminiAPI(process.env.GEMINI_API_KEY, systemPrompt, userMessage, []);
+            // Call Gemini API with Google Search grounding enabled
+            const response = await callGeminiAPI(process.env.GEMINI_API_KEY, systemPrompt, userMessage, [], true);
+
+            console.log('Gemini API Response:', response);
 
             // Try to decode the TOON response
             const decoded = decode(response);
@@ -287,7 +308,6 @@ Begin your response with the TOON header followed by ONE indented pipe-delimited
                 card.sources = hnSources.slice(0, 3);
             }
 
-            console.log('Generated card:', card);
             return card;
 
         } catch (error) {

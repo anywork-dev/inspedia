@@ -31,6 +31,9 @@
     const topic = topics.length ? topics[Math.floor(Math.random() * topics.length)] : null;
     showWelcomeTopic(topic);
     ```
+    
+- [ ] Add producthunt content!
+- [ ] Retry button on error
 - [ ] Only fetch when the card is the last one  
     - Simple check:
     ```js

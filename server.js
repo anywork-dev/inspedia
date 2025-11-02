@@ -10,6 +10,8 @@ const { count } = require('console');
 
 dotenv.config()
 
+// let console = {log(){ /* ignore */ }}
+
 // API Configuration and Functions
 const GEMINI_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
@@ -75,7 +77,8 @@ async function callGeminiAPI(apiKey, systemPrompt, userMessage, history = [], en
         throw new Error('Invalid response from Gemini API');
     }
 
-    return data.candidates[0].content.parts[0].text;
+    // return data.candidates[0].content.parts[0].text;
+    return data.candidates[0]
 }
 
 function shuffleArray(array = [], count = 3, topic = '') {
@@ -245,7 +248,7 @@ Follow these rules strictly:
 1. Your response MUST be in valid TOON format with 2-space indentation.
 2. Use a single indented, pipe-delimited data row (NOT line-by-line key:value pairs).
 3. Include these 9 fields in order: id|name|jargon|problem|market|how|impact|valuation|sources
-4. The sources field must be a JSON array string like: [{"title":"...","url":"...","summary":"..."}]
+4. The sources field must be a JSON array string like: [{"title":"...","summary":"..."}]
 5. Use this exact header: ideas[1|]{id|name|jargon|problem|market|how|impact|valuation|sources}:
 
 CRITICAL FORMAT (2-space indent, pipe-delimited row):
@@ -257,7 +260,6 @@ IMPORTANT:
 - Single data row only, pipe (|) as delimiter, 2-space indentation before the row.
 - Keep each field concise (one sentence or short phrase).
 - Include at least 3 sources discovered on the public web; if insufficient web evidence exists, explicitly note that and rely on the supplied Hacker News context.
-- Do NOT invent source URLs — only include real public URLs or fallback to Hacker News context entries.
 - Begin your response with the exact TOON header followed by ONE indented pipe-delimited data row.`;
 
             // User message with the actual context
@@ -268,7 +270,9 @@ IMPORTANT:
             console.log('User Message:', userMessage);
 
             // Call Gemini API with Google Search grounding enabled
-            const response = await callGeminiAPI(process.env.GEMINI_API_KEY, systemPrompt, userMessage, [], true);
+            const raw = await callGeminiAPI(process.env.GEMINI_API_KEY, systemPrompt, userMessage, [], true);
+
+            let response = raw.content?.parts?.[0]?.text;
 
             console.log('Gemini API Response:', response);
 
@@ -300,6 +304,71 @@ IMPORTANT:
             if (typeof card.sources === 'string') {
                 try {
                     card.sources = JSON.parse(card.sources);
+                    // Validate each source object
+                    // Validate and normalize parsed sources array
+                    if (Array.isArray(card.sources)) {
+                        try {
+                            const groundingChunks = raw?.groundingMetadata?.groundingChunks ?? [];
+                            const normalized = card.sources
+                                .map((s) => {
+                                    if (!s || typeof s !== 'object') return null;
+
+                                    const title = (s.title || s.name || '').toString().trim() || null;
+                                    let url = (s.url || s.uri || s.link || null);
+                                    const summary = (s.summary || s.snippet || s.description || '').toString().trim() || null;
+
+                                    // If no url, try to infer from groundingChunks (match by title or fallback to first chunk)
+                                    if (!url && groundingChunks.length > 0) {
+                                        if (title) {
+                                            const match = groundingChunks.find((ch) => {
+                                                const t = ch?.web?.title ?? '';
+                                                return t && t.toLowerCase().includes(title.toLowerCase());
+                                            });
+                                            if (match) url = match.web?.uri ?? url;
+                                        }
+                                        if (!url) url = groundingChunks[0]?.web?.uri ?? url;
+                                    }
+
+                                    // If still no url, try to match a Hacker News source by title
+                                    if (!url && Array.isArray(hnSources) && title) {
+                                        const hnMatch = hnSources.find(h => h.title && h.title.toLowerCase().includes(title.toLowerCase()));
+                                        if (hnMatch) url = hnMatch.url;
+                                    }
+
+                                    return {
+                                        title,
+                                        url: url || null,
+                                        summary: summary || title || null
+                                    };
+                                })
+                                .filter(Boolean);
+
+                            // Deduplicate by URL, preserve order
+                            const seen = new Set();
+                            card.sources = normalized.filter((s) => {
+                                if (!s.url) return false; // require URL after grounding/fallbacks
+                                if (seen.has(s.url)) return false;
+                                seen.add(s.url);
+                                return true;
+                            });
+
+                            // If nothing valid remains, fallback to top 3 Hacker News sources
+                            if (!Array.isArray(card.sources) || card.sources.length === 0) {
+                                card.sources = hnSources.slice(0, 3).map(s => ({
+                                    title: s.title || null,
+                                    url: s.url || null,
+                                    summary: s.content || s.title || null
+                                }));
+                            }
+                        } catch (e) {
+                            // On any error, fallback to HN sources
+                            card.sources = hnSources.slice(0, 3).map(s => ({
+                                title: s.title || null,
+                                url: s.url || null,
+                                summary: s.content || s.title || null
+                            }));
+                        }
+                    }
                 } catch (e) {
                     card.sources = hnSources.slice(0, 3); // Fallback to HN sources
                 }

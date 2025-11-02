@@ -445,7 +445,11 @@
             
             // Build URL with query parameters
             const params = new URLSearchParams();
-            params.append('query', (customTopic ? customTopic + "+" : '') + Array.from(selectedCategories).join('+'));
+            if(customTopic && customTopic.length > 0) {
+                selectedCategories.add(customTopic)
+                customTopic = '';
+            }
+            params.append('query', (customTopic ? customTopic : '') + Array.from(selectedCategories).join('+'));
 
             
             // Navigate to discovery page with query parameters
